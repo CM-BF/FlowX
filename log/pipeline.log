@@ -1,0 +1,1959 @@
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:45:30 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GCN_2l(
+  (conv1): GCNConv(1, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 469...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:45:35 PM : Explain method PGMExplainer's performance on GCN_2l with ba_shapes:
+Fidelity: 0.2669
+Infidelity: 0.4143
+RegularFidelity: 0.1172
+RegularInfidelity: 0.1846
+Acc: 0.0000
+Sparsity: 0.9000
+Explain total time: 3551ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:46:00 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+WARNING: utils.py - line 52 : create dirs D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\masks\PGMExplainer_tmp\ba_shapes_GIN_2l
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:53:09 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.6887
+Infidelity: 0.4897
+RegularFidelity: 0.2634
+RegularInfidelity: 0.2000
+Acc: 0.0000
+Sparsity: 0.5000
+Explain total time: 426946ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:58:09 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:58:13 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.6814
+Infidelity: 0.5820
+RegularFidelity: 0.2604
+RegularInfidelity: 0.2270
+Acc: 0.0000
+Sparsity: 0.6000
+Explain total time: 3132ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:58:20 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:58:25 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.6879
+Infidelity: 0.6233
+RegularFidelity: 0.2660
+RegularInfidelity: 0.2403
+Acc: 0.0000
+Sparsity: 0.7000
+Explain total time: 3135ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:58:31 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:58:36 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.6864
+Infidelity: 0.6420
+RegularFidelity: 0.2756
+RegularInfidelity: 0.2396
+Acc: 0.0000
+Sparsity: 0.8000
+Explain total time: 3465ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 13:58:44 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 01:58:48 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.4568
+Infidelity: 0.6759
+RegularFidelity: 0.1913
+RegularInfidelity: 0.2508
+Acc: 0.0000
+Sparsity: 0.9000
+Explain total time: 3092ms
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 14:02:42 2021
+INFO: Load Dataset ba_shapes
+INFO: Loading model...
+INFO: GIN_2l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=1, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+  )
+  (readout): IdenticalPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=4, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 1841...
+INFO: Create explainer: PGMExplainer...
+INFO: Begin explain
+INFO: explain graph 0 node 5
+INFO: explain graph 0 node 14
+INFO: explain graph 0 node 21
+INFO: explain graph 0 node 22
+INFO: explain graph 0 node 27
+INFO: explain graph 0 node 29
+INFO: explain graph 0 node 36
+INFO: explain graph 0 node 38
+INFO: explain graph 0 node 41
+INFO: explain graph 0 node 46
+INFO: explain graph 0 node 51
+INFO: explain graph 0 node 58
+INFO: explain graph 0 node 77
+INFO: explain graph 0 node 91
+INFO: explain graph 0 node 97
+INFO: explain graph 0 node 99
+INFO: explain graph 0 node 103
+INFO: explain graph 0 node 106
+INFO: explain graph 0 node 116
+INFO: explain graph 0 node 117
+INFO: explain graph 0 node 118
+INFO: explain graph 0 node 130
+INFO: explain graph 0 node 133
+INFO: explain graph 0 node 134
+INFO: explain graph 0 node 136
+INFO: explain graph 0 node 140
+INFO: explain graph 0 node 145
+INFO: explain graph 0 node 167
+INFO: explain graph 0 node 172
+INFO: explain graph 0 node 176
+INFO: explain graph 0 node 191
+INFO: explain graph 0 node 192
+INFO: explain graph 0 node 198
+INFO: explain graph 0 node 199
+INFO: explain graph 0 node 200
+INFO: explain graph 0 node 209
+INFO: explain graph 0 node 224
+INFO: explain graph 0 node 229
+INFO: explain graph 0 node 235
+INFO: explain graph 0 node 237
+INFO: explain graph 0 node 244
+INFO: explain graph 0 node 249
+INFO: explain graph 0 node 260
+INFO: explain graph 0 node 267
+INFO: explain graph 0 node 269
+INFO: explain graph 0 node 279
+INFO: explain graph 0 node 281
+INFO: explain graph 0 node 300
+INFO: explain graph 0 node 318
+INFO: explain graph 0 node 321
+INFO: explain graph 0 node 324
+INFO: explain graph 0 node 328
+INFO: explain graph 0 node 330
+INFO: explain graph 0 node 350
+INFO: explain graph 0 node 358
+INFO: explain graph 0 node 364
+INFO: explain graph 0 node 367
+INFO: explain graph 0 node 392
+INFO: explain graph 0 node 396
+INFO: explain graph 0 node 408
+INFO: explain graph 0 node 410
+INFO: explain graph 0 node 412
+INFO: explain graph 0 node 418
+INFO: explain graph 0 node 439
+INFO: explain graph 0 node 440
+INFO: explain graph 0 node 446
+INFO: explain graph 0 node 459
+INFO: explain graph 0 node 468
+INFO: explain graph 0 node 469
+INFO: explain graph 0 node 471
+INFO: explain graph 0 node 478
+INFO: explain graph 0 node 480
+INFO: explain graph 0 node 484
+INFO: explain graph 0 node 489
+INFO: explain graph 0 node 497
+INFO: explain graph 0 node 498
+INFO: explain graph 0 node 504
+INFO: explain graph 0 node 509
+INFO: explain graph 0 node 521
+INFO: explain graph 0 node 522
+INFO: explain graph 0 node 526
+INFO: explain graph 0 node 531
+INFO: explain graph 0 node 532
+INFO: explain graph 0 node 534
+INFO: explain graph 0 node 535
+INFO: explain graph 0 node 536
+INFO: explain graph 0 node 558
+INFO: explain graph 0 node 571
+INFO: explain graph 0 node 582
+INFO: explain graph 0 node 586
+INFO: explain graph 0 node 595
+INFO: explain graph 0 node 598
+INFO: explain graph 0 node 607
+INFO: explain graph 0 node 609
+INFO: explain graph 0 node 623
+INFO: explain graph 0 node 637
+INFO: explain graph 0 node 651
+INFO: explain graph 0 node 663
+INFO: explain graph 0 node 665
+INFO: explain graph 0 node 667
+IMPORTANT: 11/15/2021 02:02:47 PM : Explain method PGMExplainer's performance on GIN_2l with ba_shapes:
+Fidelity: 0.4568
+Infidelity: 0.6759
+RegularFidelity: 0.1913
+RegularInfidelity: 0.2508
+Acc: 0.0000
+Sparsity: 0.9000
+Explain total time: 3133ms
+ERROR: 11/15/2021 08:52:30 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\__init__.py", line 4, in <module>
+    from .explainer_manager import load_explainer
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainer_manager.py", line 12, in <module>
+    import benchmark.models.explainers as explainers
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainers.py", line 78, in <module>
+    import shap
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\shap\__init__.py", line 12, in <module>
+    from ._explanation import Explanation, Cohorts
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\shap\_explanation.py", line 12, in <module>
+    from .utils._general import OpChain
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\shap\utils\__init__.py", line 1, in <module>
+    from ._clustering import hclust_ordering, partition_tree, partition_tree_shuffle, delta_minimization_order, hclust
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\shap\utils\_clustering.py", line 4, in <module>
+    from numba import jit
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\numba\__init__.py", line 198, in <module>
+    _ensure_critical_deps()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\numba\__init__.py", line 138, in _ensure_critical_deps
+    raise ImportError("Numba needs NumPy 1.20 or less")
+ImportError: Numba needs NumPy 1.20 or less
+ERROR: 11/15/2021 08:57:28 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 967, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\__init__.py", line 4, in <module>
+    from .explainer_manager import load_explainer
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainer_manager.py", line 12, in <module>
+    import benchmark.models.explainers as explainers
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainers.py", line 2757, in <module>
+    from benchmark.models.ext.Gem.generate_ground_truth_graph_classification import gen_gt
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 26, in <module>
+    import utils.io_utils as io_utils
+ModuleNotFoundError: No module named 'utils.io_utils'; 'utils' is not a package
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 20:59:25 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+ERROR: 11/15/2021 08:59:25 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\model_manager.py", line 43, in config_model
+    ckpt = torch.load(args.test_ckpt)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 593, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 772, in _legacy_load
+    result = unpickler.load()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 728, in persistent_load
+    deserialized_objects[root_key] = restore_location(obj, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 175, in default_restore_location
+    result = fn(storage, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 151, in _cuda_deserialize
+    device = validate_cuda_device(location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 135, in validate_cuda_device
+    raise RuntimeError('Attempting to deserialize object on a CUDA '
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:01:00 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+ERROR: 11/15/2021 09:01:00 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\model_manager.py", line 43, in config_model
+    ckpt = torch.load(args.test_ckpt)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 593, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 772, in _legacy_load
+    result = unpickler.load()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 728, in persistent_load
+    deserialized_objects[root_key] = restore_location(obj, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 175, in default_restore_location
+    result = fn(storage, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 151, in _cuda_deserialize
+    device = validate_cuda_device(location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 135, in validate_cuda_device
+    raise RuntimeError('Attempting to deserialize object on a CUDA '
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:01:58 2021
+INFO: Load Dataset clintox
+ERROR: 11/15/2021 09:02:39 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:02:52 2021
+INFO: Load Dataset clintox
+ERROR: 11/15/2021 09:09:10 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:09:23 2021
+INFO: Load Dataset clintox
+ERROR: 11/15/2021 09:13:07 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:13:23 2021
+INFO: Load Dataset bbbp
+INFO: Loading model...
+INFO: GIN_3l(
+  (conv1): GINConv(nn=Sequential(
+    (0): Linear(in_features=9, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=300, out_features=300, bias=True)
+    (3): ReLU()
+  ))
+  (convs): ModuleList(
+    (0): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+    (1): GINConv(nn=Sequential(
+      (0): Linear(in_features=300, out_features=300, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=300, out_features=300, bias=True)
+      (3): ReLU()
+    ))
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 233...
+INFO: Create explainer: FlowShap_plus...
+INFO: Begin explain
+INFO: explain graph line 225
+INFO: pred label: 1
+INFO: begin this ex_label
+ERROR: 11/15/2021 09:13:29 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 210, in <module>
+    sample_explain(explainer, data, explain_collector, sparsity=args['explain'].sparsity, index=index)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\kernel\explain.py", line 267, in sample_explain
+    explainer(data.x, data.edge_index, **kwargs)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainers.py", line 1449, in forward
+    walk_sample_count)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\explainers.py", line 1609, in train_mask
+    raw_preds = self.model(x, edge_index, **kwargs)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 274, in forward
+    out_readout = self.readout(post_conv, batch)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 847, in forward
+    return gnn.global_mean_pool(x, batch)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\nn\glob\glob.py", line 49, in global_mean_pool
+    return scatter(x, batch, dim=0, dim_size=size, reduce='mean')
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_scatter\scatter.py", line 156, in scatter
+    return scatter_mean(src, index, dim, out, dim_size)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_scatter\scatter.py", line 51, in scatter_mean
+    count = scatter_sum(ones, index, index_dim, None, dim_size)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_scatter\scatter.py", line 11, in scatter_sum
+    index = broadcast(index, src, dim)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_scatter\utils.py", line 12, in broadcast
+    src = src.expand_as(other)
+KeyboardInterrupt
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:13:46 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+ERROR: 11/15/2021 09:13:46 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 159, in <module>
+    config_model(model, args['explain'], 'explain')
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\model_manager.py", line 43, in config_model
+    ckpt = torch.load(args.test_ckpt)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 593, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 772, in _legacy_load
+    result = unpickler.load()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 728, in persistent_load
+    deserialized_objects[root_key] = restore_location(obj, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 175, in default_restore_location
+    result = fn(storage, location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 151, in _cuda_deserialize
+    device = validate_cuda_device(location)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 135, in validate_cuda_device
+    raise RuntimeError('Attempting to deserialize object on a CUDA '
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:15:13 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: GNN_LRP...
+INFO: Begin explain
+INFO: explain graph line 1278
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:15:48 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 09:19:09 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 21:19:19 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 09:27:04 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+NameError: name 'DataLoader' is not defined
+ERROR: 11/15/2021 09:27:45 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\utils\to_dense_adj.py", line 22, in to_dense_adj
+    batch = edge_index.new_zeros(edge_index.max().item() + 1)
+AttributeError: 'DataLoader' object has no attribute 'new_zeros'
+ERROR: 11/15/2021 09:35:19 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+KeyError: 0
+ERROR: 11/15/2021 09:35:58 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+KeyError: 0
+ERROR: 11/15/2021 09:53:26 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\utils\to_dense_adj.py", line 22, in to_dense_adj
+    batch = edge_index.new_zeros(edge_index.max().item() + 1)
+AttributeError: 'DataLoader' object has no attribute 'new_zeros'
+ERROR: 11/15/2021 09:53:58 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+AttributeError: 'tuple' object has no attribute 'edge_index'
+ERROR: 11/15/2021 11:43:08 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:43:29 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:44:03 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\pydevd.py", line 1483, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 166, in <module>
+    dataset_method_train(explainer)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 43, in dataset_method_train
+    explainer.gen_gt(dataset, model)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 434, in gen_gt
+    pool.map(run, cg_dict['test_idx'] + cg_dict['train_idx'] + cg_dict['val_idx'])
+KeyError: 'test_idx'
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:46:10 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:46:12 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 296, in run
+    preds, _ = model(feat, adj)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 492, in forward
+    self.improved, self.add_self_loops, dtype=x.dtype)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\nn\conv\gcn_conv.py", line 57, in gcn_norm
+    edge_index, edge_weight, fill_value, num_nodes)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\utils\loop.py", line 120, in add_remaining_self_loops
+    row, col = edge_index[0], edge_index[1]
+IndexError: index 1 is out of bounds for dimension 0 with size 1
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:47:30 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:50:48 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:51:36 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:52:24 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 492, in forward
+    self.improved, self.add_self_loops, dtype=x.dtype)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\nn\conv\gcn_conv.py", line 57, in gcn_norm
+    edge_index, edge_weight, fill_value, num_nodes)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\utils\loop.py", line 120, in add_remaining_self_loops
+    row, col = edge_index[0], edge_index[1]
+IndexError: index 1 is out of bounds for dimension 0 with size 1
+ERROR: 11/15/2021 11:54:32 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 510, in forward
+    edge_weight.requires_grad_(True)
+AttributeError: 'NoneType' object has no attribute 'requires_grad_'
+ERROR: 11/15/2021 11:54:40 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydevd_bundle\pydevd_exec2.py", line 3, in Exec
+    exec(exp, global_vars, local_vars)
+  File "<input>", line 1, in <module>
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 512, in forward
+    x = torch.matmul(x, self.weight)
+RuntimeError: Tensor for 'out' is on CPU, Tensor for argument #1 'self' is on CPU, but expected them to be on GPU (while checking arguments for addmm)
+ERROR: 11/15/2021 11:56:14 PM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:56:24 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:58:00 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\pydevd.py", line 1483, in _exec
+    pydev_imports.execfile(file, globals, locals)  # execute the script
+  File "C:\Users\shurui.gui\AppData\Local\JetBrains\Toolbox\apps\PyCharm-P\ch-0\212.5284.44\plugins\python\helpers\pydev\_pydev_imps\_pydev_execfile.py", line 18, in execfile
+    exec(compile(contents+"\n", file, 'exec'), glob, loc)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 167, in <module>
+    dataset_method_train(explainer)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 43, in dataset_method_train
+    explainer.gen_gt(dataset, model)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 432, in gen_gt
+    run(5)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 315, in run
+    m_preds, _ = model(feat, masked_adj)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 492, in forward
+    self.improved, self.add_self_loops, dtype=x.dtype)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\nn\conv\gcn_conv.py", line 57, in gcn_norm
+    edge_index, edge_weight, fill_value, num_nodes)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch_geometric\utils\loop.py", line 120, in add_remaining_self_loops
+    row, col = edge_index[0], edge_index[1]
+IndexError: index 1 is out of bounds for dimension 0 with size 1
+INFO: -----------------------------------
+    Task: explain
+Mon Nov 15 23:58:09 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/15/2021 11:58:11 PM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 167, in <module>
+    dataset_method_train(explainer)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 43, in dataset_method_train
+    explainer.gen_gt(dataset, model)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 432, in gen_gt
+    run(5)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 430, in run
+    torch.save(save_dict, "distillation/%s/graph_idx_%d.ckpt" % (args['output'], graph_idx))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 369, in save
+    with _open_file_like(f, 'wb') as opened_file:
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: 'distillation/clintox_top_20_thres_None/graph_idx_5.ckpt'
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:03:20 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/16/2021 12:03:40 AM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:06:34 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/16/2021 12:07:58 AM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:08:07 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/16/2021 12:08:32 AM - utils.py - line 87 : Traceback (most recent call last):
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:08:57 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:10:10 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/16/2021 12:14:12 AM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 168, in <module>
+    dataset_method_train(explainer)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 43, in dataset_method_train
+    explainer.gen_gt(dataset, model)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 439, in gen_gt
+    pool.map(run, list(range(cg_adj.shape[0])))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 268, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 657, in get
+    raise self._value
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 320, in run
+    masked_loss = torch.stack(masked_loss)
+RuntimeError: stack expects a non-empty TensorList
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:18:37 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:22:21 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
+ERROR: 11/16/2021 12:22:22 AM - utils.py - line 87 : Traceback (most recent call last):
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 168, in <module>
+    dataset_method_train(explainer)
+  File "D:/OneDrive - mail.ustc.edu.cn/Code/PythonProjects/GNN_benchmark/benchmark/kernel/pipeline.py", line 43, in dataset_method_train
+    explainer.gen_gt(dataset, model)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 438, in gen_gt
+    pool.map(run, list(range(cg_adj.shape[0])))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 268, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 657, in get
+    raise self._value
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 121, in worker
+    result = (True, func(*args, **kwds))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\multiprocessing\pool.py", line 44, in mapstar
+    return list(map(*args))
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\ext\Gem\generate_ground_truth_graph_classification.py", line 293, in run
+    preds = model(feat[0].to(device), dense_to_sparse(adj)[0].to(device)).cpu()
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 151, in forward
+    post_conv = self.relu1(self.conv1(x, edge_index))
+  File "D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\OneDrive - mail.ustc.edu.cn\Code\PythonProjects\GNN_benchmark\benchmark\models\models.py", line 512, in forward
+    x = torch.matmul(x, self.weight)
+RuntimeError: Tensor for 'out' is on CPU, Tensor for argument #1 'self' is on CPU, but expected them to be on GPU (while checking arguments for addmm)
+INFO: -----------------------------------
+    Task: explain
+Tue Nov 16 00:23:04 2021
+INFO: Load Dataset clintox
+INFO: Loading model...
+INFO: GCN_3l(
+  (conv1): GCNConv(9, 300)
+  (convs): ModuleList(
+    (0): GCNConv(300, 300)
+    (1): GCNConv(300, 300)
+  )
+  (relu1): ReLU()
+  (relus): ModuleList(
+    (0): ReLU()
+    (1): ReLU()
+  )
+  (readout): GlobalMeanPool()
+  (ffn): Sequential(
+    (0): Linear(in_features=300, out_features=300, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=300, out_features=2, bias=True)
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+)
+INFO: Config the model used to be explained...
+INFO: Loading best Checkpoint 775...
+INFO: Create explainer: Gem...
