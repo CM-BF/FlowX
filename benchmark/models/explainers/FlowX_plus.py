@@ -23,8 +23,8 @@ class FlowX_plus(FlowBase):
         'edge_ent': 1e-1
     }
 
-    def __init__(self, model, epochs=500, lr=3e-1, explain_graph=False, molecule=False):
-    # def __init__(self, model, epochs=500, lr=1e-1, explain_graph=False, molecule=False):
+    # def __init__(self, model, epochs=500, lr=3e-1, explain_graph=False, molecule=False):
+    def __init__(self, model, epochs=500, lr=1e-1, explain_graph=False, molecule=False):
         super().__init__(model=model, epochs=epochs, lr=lr, explain_graph=explain_graph, molecule=molecule)
 
         self.score_structure = [(i % 2, term_idx)
@@ -168,14 +168,15 @@ class FlowX_plus(FlowBase):
         # loss = loss + self.coeffs['edge_ent'] * ent.mean()
 
         # info loss
-        # eps = 1e-6
-        # r = self.get_r(100, 0.9, self.epoch, final_r=x_args.sparsity)
-        # att = self.mask
-        # info_loss = (att * torch.log(att / r + eps) +
-        #              (1 - att) * torch.log((1 - att) / (1 - r + eps) + eps)).mean()
-        #
-        #
-        # loss = loss + info_loss
+        eps = 1e-6
+        # r = self.get_r(100, 0.1, self.epoch, final_r=x_args.sparsity)
+        r = x_args.sparsity
+        att = self.mask
+        info_loss = (att * torch.log(att / r + eps) +
+                     (1 - att) * torch.log((1 - att) / (1 - r + eps) + eps)).mean()
+
+
+        loss = {'loss': loss, 'info': info_loss}
 
         return loss
 
@@ -201,7 +202,7 @@ class FlowX_plus(FlowBase):
         # initialize a mask
         self.to(x.device)
 
-        # --- necesufy mask --- wrong!!!!! because of testing!!!!
+        # --- necesufy mask ---
         self.nec_suf_mask = nn.Parameter(1e-1 * nn.init.uniform_(torch.empty((1, iter_weighted_change_walks_list.shape[1], 1), device=self.device)))
         # self.nec_suf_mask = nn.Parameter(1 * torch.ones((1, iter_weighted_change_walks_list.shape[1], 1), device=self.device))
 
@@ -229,15 +230,21 @@ class FlowX_plus(FlowBase):
                                                  dim=1).detach()
 
         # train to get the mask
-        optimizer = torch.optim.Adam([{'params': self.nec_suf_mask}],
-                                      # {'params': self.iter_weighted_change_walks_list, 'lr': self.score_lr}],
-                                     lr=self.lr)
+        self.instance_norm = torch.nn.InstanceNorm1d(1, affine=True, track_running_stats=False).to(self.device)
+        optimizer = torch.optim.Adam([{'params': self.nec_suf_mask, 'lr': self.lr},
+                                      {'params': self.instance_norm.parameters(), 'lr': 1e-1}], weight_decay=1e-5)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 400], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 450], gamma=1e-1)
         print('#I#begin this ex_label')
         for epoch in range(1, self.epochs + 1):
 
+            climb = False
+
+            # if climb:
+            #     self.nec_suf_mask = self.nec_suf_mask.sigmoid()
+
+            # self.iter_weighted_change_walks_list: iter x subset_idx x flow_idx
             masked_iter_weighted_change_walks_list = self.iter_weighted_change_walks_list * self.nec_suf_mask.sigmoid()
 
             walk_scores = (masked_iter_weighted_change_walks_list.unsqueeze(3).repeat(1, 1, 1,
@@ -255,25 +262,26 @@ class FlowX_plus(FlowBase):
                                                                                       self.num_layers,
                                                                                       -1).sum(0)
             mask = self.layer_edge_mask.sum(0)
-            mask = mask - mask.min()
-            mask = mask / (mask.max() + EPS)
 
             # Option 1: make it harder: draw back: cannot control sparsity
             # mask = mask * 500 - 250
             # mask = mask.sigmoid()
-            climb = True
+
             if climb:
                 # pass
+                mask = mask - mask.min()
+                mask = mask / (mask.max() + EPS)
                 mask = mask ** 8
+                mask = mask - mask.min()
+                mask = mask / (mask.max() + EPS)
             else:
                 # end_epoch = 300
                 # temperature = float(t0 * ((t1 / t0) ** (epoch / end_epoch))) if epoch < end_epoch else t1
+                mask = self.instance_norm(mask[None, None, :]).squeeze()
                 self.epoch = epoch
                 temperature = 1
                 mask = gumbel_softmax(mask, temperature, training=True)
 
-            mask = mask - mask.min()
-            mask = mask / (mask.max() + EPS)
             cur_sparsity = (mask < 0.5).sum().float() / mask.shape[0]
             # if cur_sparsity < x_args.sparsity:
             #     # --- early stop ---
@@ -298,10 +306,10 @@ class FlowX_plus(FlowBase):
             loss = self.__loss__(raw_preds, ex_label)
 
             if epoch % 20 == 0:
-                print(f'#D#Loss:{loss.item()}')
+                print(f'#D#Loss:{loss["loss"].item()}, Info: {loss["info"]}')
 
             optimizer.zero_grad()
-            loss.backward()
+            sum(loss.values()).backward()
             optimizer.step()
             # scheduler.step()
         return
