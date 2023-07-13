@@ -8,94 +8,22 @@ Author: Shurui Gui
 
 import os
 import torch
+
+from benchmark.kernel.table_utils import output_table
+from benchmark.kernel.train import dataset_method_train
 from definitions import ROOT_DIR
 import time
 from benchmark.data import load_dataset, create_dataloader
 from benchmark.models import load_model, config_model, load_explainer
 from benchmark.kernel import train_batch, val, test, init, set_train_utils
-from benchmark.kernel.utils import save_epoch, argus_parse
+from benchmark.kernel.utils import save_epoch, argus_parse, detail_results
 from benchmark.kernel.explain import XCollector, sample_explain
 from benchmark.kernel.train_utils import TrainUtils as tr_utils
-from benchmark.args import data_args, x_args
-import matplotlib.pyplot as plt
+from benchmark.args import data_args
 from tqdm import tqdm
 from cilog import fill_table
-import shutil
 from benchmark.models.explainers_backup import Gem
 from benchmark.models.explainers.PGExplainer import PGExplainer
-
-
-def dataset_method_train(explainer):
-    if isinstance(explainer, PGExplainer):
-        use_pred_label = args['explain'].explain_pred_label
-        if use_pred_label:
-            train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
-                                      f'{args["explain"].dataset_name}_{args["explain"].model_name}_PL.pt')
-        else:
-            train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
-                                      f'{args["explain"].dataset_name}_{args["explain"].model_name}.pt')
-        force_retrain = False
-        if not os.path.exists(train_ckpt) or force_retrain:
-            explainer.pg.train_explanation_network(loader['explain'].dataset, use_pred_label=use_pred_label)
-            torch.save(explainer.state_dict(), train_ckpt)
-        state_dict = torch.load(train_ckpt)
-        explainer.load_state_dict(state_dict, strict=False)
-    elif isinstance(explainer, Gem):
-        from benchmark.args import gem_args
-        top_k = gem_args.top_k
-        threshold = None
-        force_regen = gem_args.force_regen
-        force_retrain = gem_args.force_retrain
-        save_root = os.path.join(ROOT_DIR, 'Gem')
-        dataset_name = dataset['train'].dataset.name
-        save_dir = f"{dataset_name}_top_{top_k}_thres_{threshold}"
-        gen_output = os.path.join(save_root, 'distillation', save_dir)
-        train_output = os.path.join(save_root, 'explanation', save_dir)
-        if force_regen or not os.path.exists(gen_output):
-            explainer.gen_gt(dataset, model, device=data_args.device, top_k=top_k, threshold=threshold, output=gen_output)
-            print('finish generation')
-            force_retrain = True
-        train_args = explainer.train_args[data_args.model_level]
-        train_args.distillation = gen_output
-        train_args.output = train_output
-        train_args.dataset = dataset_name
-        if force_retrain or not os.path.exists(train_output):
-            explainer.train_vae(train_args)
-            print('finish training explainer')
-
-
-def detail_results(args, explain_collector):
-    independent_fidelity = args['explain'].list_sample or args['explain'].vis or args['explain'].save_fig
-    if args['explain'].list_sample:
-        list_name = os.path.join(ROOT_DIR, 'quantitative_results', 'detail_results',
-                                 f'{args["explain"].dataset_name}_{args["explain"].model_name}.xlsx')
-        probe_list_name = os.path.join(ROOT_DIR, 'quantitative_results', 'detail_results',
-                                 f'{args["explain"].dataset_name}_{args["explain"].model_name}_probe.xlsx')
-        list_path = os.path.dirname(list_name)
-        if not os.path.exists(list_path):
-            os.makedirs(list_path)
-        list_format = [list(range(100)),
-                       args['explain'].table_format[0], args['explain'].table_format[2]]
-
-        try_failure = 0
-        while try_failure < 3:
-            try:
-                print(list_name)
-                fill_table(list_name,
-                           value=f'{explain_collector.fidelity:.4f}',
-                           x=index, y=args['explain'].explainer, z=f'{args["explain"].sparsity}S',
-                           table_format=list_format)
-                shutil.copyfile(list_name,
-                                probe_list_name)
-                break
-            except:
-                try_failure += 1
-                time.sleep(10)
-
-    if independent_fidelity:
-        explain_collector.new(),
-    return
-
 
 # Parse arguments
 print('#D#Parse arguments.')
@@ -115,15 +43,7 @@ print('#D#', dataset['train'][0])
 # pack in batches
 # data_args.model_level = 'node'
 loader = create_dataloader(dataset)
-# max_node = 0
-# for key in ['explain']:
-#     for index, data in enumerate(loader[key]):
-#         if data.x.shape[0] > max_node:
-#             max_node = data.x.shape[0]
-#         if index >= 99:
-#             break
-# print(max_node)
-# exit(0)
+
 # Load model
 print('#IN#Loading model...')
 model = load_model(args['common'].model_name)
@@ -185,7 +105,7 @@ elif args['common'].task == 'explain':
     explainer = load_explainer(args['explain'].explainer, model, args['explain'])
 
     if isinstance(explainer, PGExplainer) or isinstance(explainer, Gem):
-        dataset_method_train(explainer)
+        dataset_method_train(explainer, args, loader, dataset, model)
 
     # begin explain
     explain_collector = XCollector(model, loader['explain'])
@@ -260,32 +180,7 @@ elif args['common'].task == 'explain':
         print(f'#W#Block table output.')
         exit(0)
 
-    xlsx_name = None
-    if 'GCN' in args['common'].model_name:
-        xlsx_name = 'GCN'
-    elif 'GIN' in args['common'].model_name:
-        xlsx_name = 'GIN'
-    assert xlsx_name is not None
-
-    if args['explain'].explain_pred_label:
-        xlsx_name += '_PL'
-
-    try_failure = 0
-    while try_failure < 3:
-        try:
-            file = os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}.xlsx')
-            print(file)
-            value = f'{explain_collector.fidelity:.4f}/{explain_collector.infidelity:.4f}'
-            fill_table(file,
-                       value=value,
-                       x=args['explain'].explainer, y=args['explain'].dataset_name, z=f'{explain_collector.sparsity}S',
-                       table_format=args['explain'].table_format)
-            shutil.copyfile(os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}.xlsx'),
-                            os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}_prob.xlsx'))
-            break
-        except:
-            try_failure += 1
-            time.sleep(10)
+    output_table()
 
 elif args['common'].task == 'table':
     xlsx_name = None
