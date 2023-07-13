@@ -5,8 +5,11 @@ Time: 2020/7/31 16:33
 Project: GNN_benchmark
 Author: Shurui Gui
 """
+import time
 
 import torch
+from cilog import fill_table
+
 from benchmark import common_args, train_args, test_args, x_args, TrainArgs, data_args
 from sklearn.metrics import roc_auc_score as sk_roc_auc, precision_recall_curve, auc, mean_squared_error, \
     mean_absolute_error, accuracy_score
@@ -15,6 +18,9 @@ import torch.nn.functional as F
 from math import sqrt, isnan
 import os
 import shutil
+
+from benchmark.kernel.pipeline import index
+from definitions import ROOT_DIR
 
 
 def prc_auc_score(y_true, y_pred):
@@ -137,3 +143,35 @@ def argus_parse() -> dir:
 
     return {'common': common_args, 'train': train_args, 'test': test_args, 'explain': x_args}
 
+
+def detail_results(args, explain_collector):
+    independent_fidelity = args['explain'].list_sample or args['explain'].vis or args['explain'].save_fig
+    if args['explain'].list_sample:
+        list_name = os.path.join(ROOT_DIR, 'quantitative_results', 'detail_results',
+                                 f'{args["explain"].dataset_name}_{args["explain"].model_name}.xlsx')
+        probe_list_name = os.path.join(ROOT_DIR, 'quantitative_results', 'detail_results',
+                                 f'{args["explain"].dataset_name}_{args["explain"].model_name}_probe.xlsx')
+        list_path = os.path.dirname(list_name)
+        if not os.path.exists(list_path):
+            os.makedirs(list_path)
+        list_format = [list(range(100)),
+                       args['explain'].table_format[0], args['explain'].table_format[2]]
+
+        try_failure = 0
+        while try_failure < 3:
+            try:
+                print(list_name)
+                fill_table(list_name,
+                           value=f'{explain_collector.fidelity:.4f}',
+                           x=index, y=args['explain'].explainer, z=f'{args["explain"].sparsity}S',
+                           table_format=list_format)
+                shutil.copyfile(list_name,
+                                probe_list_name)
+                break
+            except:
+                try_failure += 1
+                time.sleep(10)
+
+    if independent_fidelity:
+        explain_collector.new(),
+    return
