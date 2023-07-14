@@ -16,7 +16,7 @@ from definitions import ROOT_DIR
 from .utils import nan2zero_get_mask
 from benchmark.kernel.train_utils import TrainUtils as tr_utils
 from benchmark.kernel.utils import Metric
-from benchmark.models.explainers import PGExplainer
+from benchmark.models.explainers import PGExplainer, VGIB
 from benchmark.models.explainers_backup import Gem
 
 
@@ -35,8 +35,8 @@ def train_batch(model: torch.nn.Module, data: Batch, args: TrainArgs):
 
 
 def dataset_method_train(explainer, args, loader, dataset, model):
+    use_pred_label = args['explain'].explain_pred_label
     if isinstance(explainer, PGExplainer):
-        use_pred_label = args['explain'].explain_pred_label
         if use_pred_label:
             train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
                                       f'{args["explain"].dataset_name}_{args["explain"].model_name}_PL.pt')
@@ -71,3 +71,5 @@ def dataset_method_train(explainer, args, loader, dataset, model):
         if force_retrain or not os.path.exists(train_output):
             explainer.train_vae(train_args)
             print('finish training explainer')
+    elif isinstance(explainer, VGIB):
+        explainer.fit_a_single_model(dataset['test'], use_pred_label=True)

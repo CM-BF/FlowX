@@ -10,12 +10,12 @@ import os
 import torch
 
 from benchmark.kernel.table_utils import output_table
-from benchmark.kernel.train import dataset_method_train
+from benchmark.kernel.train import dataset_method_train, train_batch
 from definitions import ROOT_DIR
 import time
 from benchmark.data import load_dataset, create_dataloader
 from benchmark.models import load_model, config_model, load_explainer
-from benchmark.kernel import train_batch, val, test, init, set_train_utils
+from benchmark.kernel import val, test, init, set_train_utils
 from benchmark.kernel.utils import save_epoch, argus_parse, detail_results
 from benchmark.kernel.explain import XCollector, sample_explain
 from benchmark.kernel.train_utils import TrainUtils as tr_utils
@@ -24,6 +24,8 @@ from tqdm import tqdm
 from cilog import fill_table
 from benchmark.models.explainers_backup import Gem
 from benchmark.models.explainers.PGExplainer import PGExplainer
+from benchmark.models.explainers.VGIB import VGIB
+from typing import Union
 
 # Parse arguments
 print('#D#Parse arguments.')
@@ -104,7 +106,7 @@ elif args['common'].task == 'explain':
     print(f'#IN#Create explainer: {args["explain"].explainer}...')
     explainer = load_explainer(args['explain'].explainer, model, args['explain'])
 
-    if isinstance(explainer, PGExplainer) or isinstance(explainer, Gem):
+    if isinstance(explainer, (PGExplainer, Gem, VGIB)):
         dataset_method_train(explainer, args, loader, dataset, model)
 
     # begin explain
@@ -140,7 +142,7 @@ elif args['common'].task == 'explain':
                     sample_explain(explainer, data, explain_collector, sparsity=args['explain'].sparsity, node_idx=node_idx,
                                    index=index)
 
-                    detail_results(args, explain_collector)
+                    detail_results(args, explain_collector, index)
 
                     if index >= args['explain'].num_explain - 1:
                         break
@@ -151,7 +153,7 @@ elif args['common'].task == 'explain':
                 print(f'#IN#explain graph line {loader["explain"].dataset.indices[index] + 2}')
                 sample_explain(explainer, data, explain_collector, sparsity=args['explain'].sparsity, index=index)
 
-                detail_results(args, explain_collector)
+                detail_results(args, explain_collector, index)
 
                 # print(index, ' '.join(data.sentence[0]))
                 if index >= args['explain'].num_explain - 1:
@@ -180,7 +182,7 @@ elif args['common'].task == 'explain':
         print(f'#W#Block table output.')
         exit(0)
 
-    output_table()
+    output_table(args, explain_collector)
 
 elif args['common'].task == 'table':
     xlsx_name = None

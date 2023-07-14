@@ -11,3 +11,4 @@ from .GradCAM import GradCAM
 from .PGExplainer import PGExplainer
 from .PGMExplainer import PGMExplainer
 from .SubgraphX import SubgraphX
+from .VGIB import VGIB
