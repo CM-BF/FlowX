@@ -4,11 +4,10 @@ import time
 
 from cilog import fill_table
 
-from benchmark.kernel.pipeline import args, explain_collector
 from definitions import ROOT_DIR
 
 
-def output_table():
+def output_table(args, explain_collector):
     xlsx_name = None
     if 'GCN' in args['common'].model_name:
         xlsx_name = 'GCN'

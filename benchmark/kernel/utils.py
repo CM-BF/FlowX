@@ -19,7 +19,6 @@ from math import sqrt, isnan
 import os
 import shutil
 
-from benchmark.kernel.pipeline import index
 from definitions import ROOT_DIR
 
 
@@ -144,7 +143,7 @@ def argus_parse() -> dir:
     return {'common': common_args, 'train': train_args, 'test': test_args, 'explain': x_args}
 
 
-def detail_results(args, explain_collector):
+def detail_results(args, explain_collector, index):
     independent_fidelity = args['explain'].list_sample or args['explain'].vis or args['explain'].save_fig
     if args['explain'].list_sample:
         list_name = os.path.join(ROOT_DIR, 'quantitative_results', 'detail_results',
