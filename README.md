@@ -14,7 +14,7 @@ See environment.yml and requirements.txt. The code is also tested on PyTorch 1.1
 ## Run FlowX
 
 ```shell
-python -m benchmark.kernel.pipeline.py --task explain --model_name GCN_3l --dataset_name bbbp --target_idx 0 --explainer FlowX_plus --sparsity 0.7 --force_recalculate
+python -m xgraph.kernel.pipeline.py --task explain --model_name GCN_3l --dataset_name bbbp --target_idx 0 --explainer FlowX_plus --sparsity 0.7 --force_recalculate
 ```
 
 ## License
