@@ -16,8 +16,10 @@ from definitions import ROOT_DIR
 from .utils import nan2zero_get_mask
 from benchmark.kernel.train_utils import TrainUtils as tr_utils
 from benchmark.kernel.utils import Metric
-from benchmark.models.explainers import PGExplainer, VGIB
+from benchmark.models.explainers import PGExplainer, VGIB, RC_Explainer_Batch_star
 from benchmark.models.explainers_backup import Gem
+from pathlib import Path
+from benchmark.args import gem_args
 
 
 def train_batch(model: torch.nn.Module, data: Batch, args: TrainArgs):
@@ -43,14 +45,12 @@ def dataset_method_train(explainer, args, loader, dataset, model):
         else:
             train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
                                       f'{args["explain"].dataset_name}_{args["explain"].model_name}.pt')
-        force_retrain = False
-        if not os.path.exists(train_ckpt) or force_retrain:
+        if not os.path.exists(train_ckpt) or gem_args.force_retrain:
             explainer.pg.train_explanation_network(loader['explain'].dataset, use_pred_label=use_pred_label)
             torch.save(explainer.state_dict(), train_ckpt)
         state_dict = torch.load(train_ckpt)
         explainer.load_state_dict(state_dict, strict=False)
     elif isinstance(explainer, Gem):
-        from benchmark.args import gem_args
         top_k = gem_args.top_k
         threshold = None
         force_regen = gem_args.force_regen
@@ -73,3 +73,12 @@ def dataset_method_train(explainer, args, loader, dataset, model):
             print('finish training explainer')
     elif isinstance(explainer, VGIB):
         explainer.fit_a_single_model(dataset['test'], use_pred_label=True)
+    elif isinstance(explainer, RC_Explainer_Batch_star):
+        train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'RC_explainer' / args["explain"].dataset_name / f'{args["explain"].model_name}_PL.pt'
+        # whether the file's parent directory exists
+        if not train_ckpt_path.parent.exists():
+            train_ckpt_path.parent.mkdir(parents=True)
+        if train_ckpt_path.exists() and not gem_args.force_retrain:
+            explainer.load_policy_net(path=train_ckpt_path)
+        else:
+            explainer.train_policy(loader['train'], loader['explain'], save_model_path=train_ckpt_path)

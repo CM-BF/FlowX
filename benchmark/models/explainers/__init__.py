@@ -12,3 +12,4 @@ from .PGExplainer import PGExplainer
 from .PGMExplainer import PGMExplainer
 from .SubgraphX import SubgraphX
 from .VGIB import VGIB
+from .RC_Explainer import RC_Explainer_Batch_star

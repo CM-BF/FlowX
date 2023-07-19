@@ -5,7 +5,7 @@
 [![License][license-image]][license-url]
 
 [license-url]: https://github.com/CM-BF/FlowX/blob/main/LICENSE
-[license-image]:https://img.shields.io/badge/license-GPL3.0-green.svg
+[license-image]:https://img.shields.io/badge/License-MIT-yellow.svg
 
 ## Dependencies
 
