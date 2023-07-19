@@ -153,7 +153,7 @@ class GCN_3l(GNNBasic):
             post_conv = relu(conv(post_conv, edge_index))
 
 
-        out_readout = self.readout(post_conv, batch)
+        out_readout = self.readout(post_conv, batch, kwargs.get('batch_size'))
 
         out = self.ffn(out_readout)
         return out
@@ -165,6 +165,9 @@ class GCN_3l(GNNBasic):
         for conv, relu in zip(self.convs, self.relus):
             post_conv = relu(conv(post_conv, edge_index))
         return post_conv, batch
+
+    def get_graph_rep(self, *args, **kwargs) -> torch.Tensor:
+        return self.readout(*self.get_emb(*args, **kwargs), kwargs.get('batch_size'))
 
 
 class GCN_2l(GNNBasic):
@@ -272,7 +275,7 @@ class GIN_3l(GNNBasic):
             post_conv = conv(post_conv, edge_index)
 
 
-        out_readout = self.readout(post_conv, batch)
+        out_readout = self.readout(post_conv, batch, kwargs.get('batch_size'))
 
         out = self.ffn(out_readout)
         return out
@@ -283,6 +286,9 @@ class GIN_3l(GNNBasic):
         for conv in self.convs:
             post_conv = conv(post_conv, edge_index)
         return post_conv, batch
+
+    def get_graph_rep(self, *args, **kwargs) -> torch.Tensor:
+        return self.readout(*self.get_emb(*args, **kwargs), kwargs.get('batch_size'))
 
 class GIN_2l(GNNBasic):
 
@@ -847,8 +853,8 @@ class GlobalMeanPool(GNNPool):
     def __init__(self):
         super().__init__()
 
-    def forward(self, x, batch):
-        return gnn.global_mean_pool(x, batch)
+    def forward(self, x, batch, size=None):
+        return gnn.global_mean_pool(x, batch, size)
 
 
 class IdenticalPool(GNNPool):
@@ -856,7 +862,7 @@ class IdenticalPool(GNNPool):
     def __init__(self):
         super().__init__()
 
-    def forward(self, x, batch):
+    def forward(self, x, batch, size=None):
         return x
 
 

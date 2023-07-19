@@ -17,9 +17,9 @@ class GeneralArgs(Tap):
     random_seed: int = 123              # fixed random seed for reproducibility
     task: Literal['train', 'test', 'explain', 'table'] = 'test' # running mode
     dataset_split: List[float] = [0.8, 0.1, 0.1]    # train_val_test split
-    train_bs: int = 3000                 # batch size for training
-    val_bs: int = 3000                   # batch size for validation
-    test_bs: int = 3000                  # batch size for test
+    train_bs: int = 64# 3000                 # batch size for training
+    val_bs: int = 64# 3000                   # batch size for validation
+    test_bs: int = 64# 3000                  # batch size for test
     x_bs: int = 1                        # batch size for explain
     dataset_name: str = 'Tox21'              # dataset
     model_name: str = 'GCN'  # specify model name
