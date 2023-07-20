@@ -1,15 +1,1 @@
-{
-    "mailhost": [
-        "mail.ustc.edu.cn",
-        25
-    ],
-    "fromaddr": "agnesgsr@mail.ustc.edu.cn",
-    "toaddrs": [
-        "707720968@qq.com"
-    ],
-    "subject": "GNN_benchmark",
-    "credentials": [
-        "agnesgsr@mail.ustc.edu.cn",
-        "19971117"
-    ]
-}
+
