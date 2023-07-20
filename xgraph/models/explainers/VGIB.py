@@ -32,12 +32,14 @@ class VGIB(EdgeBase):
         super().__init__(model=model, epochs=epochs, lr=lr, explain_graph=explain_graph, molecule=molecule)
         self.args = munch.Munch(epochs=10, mi_weight=1e-4, con_weight=5, lr=1e-2)
         self.batch_size = 16
-
-    def _setup_model(self):
-        """
-        Creating a SEAL model.
-        """
         self.VGIB_model = Subgraph(self.model, self.args).to(self.device)
+
+    # save VGIB_model after training
+    def save_model(self, path):
+        torch.save(self.VGIB_model.state_dict(), path)
+
+    def load_model(self, path):
+        self.VGIB_model.load_state_dict(torch.load(path))
 
     def set_requires_grad(self, net, requires_grad=False):
 
@@ -52,7 +54,7 @@ class VGIB(EdgeBase):
         """
         print("\nTraining started.\n")
 
-        self._setup_model()
+
 
         optimizer = torch.optim.Adam(itertools.chain(self.VGIB_model.graph_level_model.fully_connected_1.parameters(),
                                                      self.VGIB_model.graph_level_model.fully_connected_2.parameters()),
@@ -245,8 +247,8 @@ class SAGE(torch.nn.Module):
         KL_Loss = torch.mean(KL_tensor)
 
         if torch.cuda.is_available():
-            EYE = torch.ones(2).cuda()
-            Pos_mask = torch.FloatTensor([1, 0]).cuda()
+            EYE = torch.ones(2).to(data.x.device)
+            Pos_mask = torch.FloatTensor([1, 0]).to(data.x.device)
         else:
             EYE = torch.ones(2)
             Pos_mask = torch.FloatTensor([1, 0])

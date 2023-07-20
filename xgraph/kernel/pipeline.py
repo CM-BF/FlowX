@@ -11,7 +11,7 @@ import torch
 
 from xgraph.kernel.table_utils import output_table
 from xgraph.kernel.train import dataset_method_train, train_batch
-from xgraph.definitions import ROOT_DIR
+from xgraph.definitions import ROOT_DIR, OOM_CODE
 import time
 from xgraph.data import load_dataset, create_dataloader
 from xgraph.models import load_model, config_model, load_explainer
@@ -204,6 +204,16 @@ def main():
     if args['common'].email:
         print('#mail#Task finished!')
 
+
+def xgraph_main():
+    try:
+        main()
+    except RuntimeError as e:
+        if 'out of memory' in str(e):
+            print(f'#E#{e}')
+            exit(OOM_CODE)
+        else:
+            raise e
 
 if __name__ == '__main__':
     main()

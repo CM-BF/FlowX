@@ -1,34 +1,48 @@
 import os
 import shutil
-import time
 
-from cilog import fill_table
+from xgraph.definitions import ROOT_DIR
+from pathlib import Path
+# from openpyxl import Workbook, load_workbook
+import pandas as pd
+from filelock import FileLock, Timeout
+from pathlib import Path
+import time
 
 from xgraph.definitions import ROOT_DIR
 
 
 def output_table(args, explain_collector):
-    xlsx_name = None
-    if 'GCN' in args['common'].model_name:
-        xlsx_name = 'GCN'
-    elif 'GIN' in args['common'].model_name:
-        xlsx_name = 'GIN'
-    assert xlsx_name is not None
-    if args['explain'].explain_pred_label:
-        xlsx_name += '_PL'
-    try_failure = 0
-    while try_failure < 3:
-        try:
-            file = os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}.xlsx')
-            print(file)
-            value = f'{explain_collector.fidelity:.4f}/{explain_collector.infidelity:.4f}'
-            fill_table(file,
-                       value=value,
-                       x=args['explain'].explainer, y=args['explain'].dataset_name, z=f'{explain_collector.sparsity}S',
-                       table_format=args['explain'].table_format)
-            shutil.copyfile(os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}.xlsx'),
-                            os.path.join(ROOT_DIR, 'quantitative_results', f'{xlsx_name}_prob.xlsx'))
-            break
-        except:
-            try_failure += 1
-            time.sleep(10)
+    file = Path(ROOT_DIR, 'quantitative_results', f'GCN_GIN_PL.xlsx')
+
+    lock = FileLock(file.with_suffix('.xlsx.lock'), timeout=10)
+    with lock:
+        sheet = args['common'].model_name.split('_')[0]
+        result_df = pd.read_excel(Path(ROOT_DIR, 'quantitative_results', 'GCN_GIN_PL.xlsx'),
+                                  sheet_name=sheet, index_col=[0, 1], header=[0, 1])
+        result_df = expand_table(args, explain_collector, result_df)
+
+        result_df.loc[(args["explain"].sparsity, args['explain'].explainer), args['common'].dataset_name] \
+            = [metric_v for metric_v in (explain_collector.fidelity, explain_collector.infidelity, explain_collector.acc) if metric_v is not None]
+        # replace one excel sheet
+        with pd.ExcelWriter(Path(ROOT_DIR, 'quantitative_results', 'GCN_GIN_PL.xlsx'), mode='a', if_sheet_exists='replace') as writer:
+            result_df.to_excel(writer, sheet_name=sheet, float_format='%.4f')
+        # backup file, if dir not exists, create it
+        os.makedirs(Path(ROOT_DIR, 'quantitative_results', '.excel_bak'), exist_ok=True)
+        shutil.copy(Path(ROOT_DIR, 'quantitative_results', 'GCN_GIN_PL.xlsx'),
+                    Path(ROOT_DIR, 'quantitative_results', '.excel_bak', f'GCN_GIN_PL{time.asctime(time.localtime(time.time()))}.xlsx'))
+
+def expand_table(args, explain_collector, result_df):
+    if (0.5, args['explain'].explainer) not in result_df.index:
+        result_df = pd.concat([result_df, pd.DataFrame(index=pd.MultiIndex.from_product(
+            [[0.5, 0.6, 0.7, 0.8, 0.9], [args['explain'].explainer]]
+        ))]).sort_index()
+    if (args['common'].dataset_name, 'Fidelity+') not in result_df.columns:
+        result_df = pd.concat([result_df, pd.DataFrame(columns=pd.MultiIndex.from_product(
+            [[args['common'].dataset_name], ['Fidelity+', 'Fidelity-']]
+        ))]).sort_index(axis=1)
+    if (args['common'].dataset_name, 'Accuracy') not in result_df.columns and explain_collector.acc is not None:
+        result_df = pd.concat([result_df, pd.DataFrame(columns=pd.MultiIndex.from_product(
+            [[args['common'].dataset_name], ['Accuracy']]
+        ))]).sort_index(axis=1)
+    return result_df

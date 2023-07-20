@@ -11,7 +11,7 @@ setup(
     package_dir={"xgraph": "xgraph"},
     entry_points = {
         'console_scripts': [
-            'xgraphtg = xgraph.kernel.pipeline:main',
+            'xgraphtg = xgraph.kernel.pipeline:xgraph_main',
             # 'xgraphtl = xgraph.kernel.launch:launch'
         ]
     }

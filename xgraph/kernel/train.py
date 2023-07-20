@@ -71,7 +71,15 @@ def dataset_method_train(explainer, args, loader, dataset, model):
             explainer.train_vae(train_args)
             print('finish training explainer')
     elif isinstance(explainer, VGIB):
-        explainer.fit_a_single_model(dataset['test'], use_pred_label=True)
+        train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'VGIB' / args[
+            "explain"].dataset_name / f'{args["explain"].model_name}_PL.pt'
+        os.makedirs(train_ckpt_path.parent, exist_ok=True)
+        if train_ckpt_path.exists() and not gem_args.force_retrain:
+            explainer.load_model(train_ckpt_path)
+        else:
+            explainer.fit_a_single_model(dataset['test'], use_pred_label=True)
+            explainer.save_model(train_ckpt_path)
+
     elif isinstance(explainer, RC_Explainer_Batch_star):
         train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'RC_explainer' / args["explain"].dataset_name / f'{args["explain"].model_name}_PL.pt'
         # whether the file's parent directory exists

@@ -9,34 +9,36 @@ import subprocess, time, signal, copy
 import pynvml
 
 pynvml.nvmlInit()
-handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+device = 9
+handle = pynvml.nvmlDeviceGetHandleByIndex(device)
 
 def signal_process():
     # os.setsid()
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
-conda_env = '/data/shurui.gui/anaconda3/envs/torch_110/bin/python' #
+# conda_env = '/data/shurui.gui/anaconda3/envs/torch_110/bin/python' #
 # conda_env = r'D:\Users\shurui.gui\Anaconda3\envs\torch_v1.9\python.exe'
 # epoch = 1000
 task = 'explain'
 
 POLITE_MODE = True
-POLITE_NUM = 1
+POLITE_NUM = 5
 allow_auto_emit_detection = False
 
-args_group = [f'-m benchmark.kernel.pipeline --task {task} --model_name {model_dataset[0]} --dataset_name {model_dataset[1]} ' \
+args_group = [f'xgraphtg --task {task} --model_name {model_dataset[0]} --dataset_name {model_dataset[1]} ' \
               f'--target_idx {model_dataset[2]} --explainer {explainer} --sparsity {sparsity} ' \
-              f'--log_file {task}_{model_dataset[1]}_{model_dataset[0]}_{explainer}_{sparsity}.log' \
-              # f' --save_fig --nolabel'
+              f'--log_file {task}_{model_dataset[1]}_{model_dataset[0]}_{explainer}_{sparsity}.log ' \
+              f'--device {device}'
               for model_series in ['GCN', 'GIN']
                   for sparsity in ['0.5', '0.6', '0.7', '0.8', '0.9']
                       for model_dataset in [(f'{model_series}_3l', 'clintox', 0), (f'{model_series}_3l', 'ba_lrp', 0),
                                             (f'{model_series}_3l', 'bbbp', 0), (f'{model_series}_3l', 'tox21', 2),
-                                            (f'{model_series}_3l', 'bace', 0)]#(f'{model_series}_3l', 'clintox', 0), (f'{model_series}_3l', 'ba_lrp', 0),
+                                            (f'{model_series}_3l', 'bace', 0), (f'{model_series}_3l', 'graph_sst2', 0),
+                                            (f'{model_series}_3l', 'ba_infe', 0)]#(f'{model_series}_3l', 'clintox', 0), (f'{model_series}_3l', 'ba_lrp', 0),
                                             #  (f'{model_series}_3l', 'tox21', 2),  # (f'{model_series}_3l', 'ba_infe', 0),
                                             # (f'{model_series}_3l', 'bbbp', 0), (f'{model_series}_3l', 'bace', 0),
                                             # (f'{model_series}_3l', 'graph_sst2', 0)] (f'{model_series}_2l', 'ba_shapes', 0)
-                          for explainer in ['Gem'] # ['GradCAM', 'PGMExplainer', 'DeepLIFT', 'GNNExplainer', 'PGExplainer', 'GNN_GI', 'GNN_LRP', 'FlowShap_orig', 'FlowShap_plus', ]
+                          for explainer in ['RC_Explainer_Batch_star'] # ['GradCAM', 'PGMExplainer', 'DeepLIFT', 'GNNExplainer', 'PGExplainer', 'GNN_GI', 'GNN_LRP', 'FlowShap_orig', 'FlowShap_plus', ]
 
 ]
 
@@ -61,7 +63,8 @@ args_group = [f'-m benchmark.kernel.pipeline --task {task} --model_name {model_d
 #                       # for explainer in ['GNNExplainer', 'GradCAM']
 # ]
 
-cmd_args_group = [' '.join([conda_env, args]) for args in args_group]
+# cmd_args_group = [' '.join([conda_env, args]) for args in args_group]
+cmd_args_group = args_group
 
 process_pool = {}
 while 1:

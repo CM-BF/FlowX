@@ -193,8 +193,8 @@ class XCollector(object):
             return self.metrics['acc']
         else:
             if not hasattr(self.data_list[0], 'class_mask'):
-                self.metrics['acc'] = 0.
-                return self.metrics['acc']
+                # self.metrics['acc'] = 0.
+                return None
             acc = []
             for graph_idx, (data, raw_masks, target) in enumerate(zip(self.data_list, self.masks, self.__targets)):
                 gt_edges = data.class_mask[0][target]
