@@ -317,7 +317,7 @@ class FlowX(FlowBase):
 
             mask_per_sub = unmask_pool.shape[0] // self.ns_per_iter
             weighted_change_walks_list = []
-            last_eliminated_walks = torch.zeros(walk_indices_list.shape[0], dtype=torch.bool, device=self.device)
+            eliminated_walks = torch.zeros(walk_indices_list.shape[0], dtype=torch.bool, device=self.device)
             layer_edge_mask_list = []
             for sub_idx in range(self.ns_per_iter):
                 # --- sub random index ---
@@ -329,13 +329,13 @@ class FlowX(FlowBase):
                                           (edge_index_with_loop.shape[1] * torch.arange(self.num_layers,
                                                                                         device=self.device)).repeat(
                                               walk_indices_list.shape[0], 1)
-                eliminated_walks = torch.stack([walk_plain_indices_list == edge for edge in eliminated_layer_edges],
+                all_walks_by_layer_edges = torch.stack([walk_plain_indices_list == edge for edge in eliminated_layer_edges],
                                                dim=0).long().sum(0).sum(1).bool().long()
-                weighted_changed_walks = eliminated_walks.clone().float()
-                weighted_changed_walks[eliminated_walks == last_eliminated_walks] = 0.
+                weighted_changed_walks = all_walks_by_layer_edges.clone().float()
+                weighted_changed_walks[all_walks_by_layer_edges == eliminated_walks] = 0.
                 weighted_changed_walks /= (weighted_changed_walks > 1e-20).sum() + 1e-30
                 weighted_change_walks_list.append(weighted_changed_walks)
-                last_eliminated_walks = eliminated_walks
+                eliminated_walks = eliminated_walks | all_walks_by_layer_edges
 
                 # --- setting a subset mask ---
                 layer_edge_masks = torch.ones((self.num_layers, edge_index_with_loop.shape[1]),

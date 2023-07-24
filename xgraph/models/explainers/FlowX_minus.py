@@ -352,7 +352,7 @@ class FlowX_minus(FlowBase):
                 weighted_changed_walks[eliminated_walks == last_eliminated_walks] = 0.
                 weighted_changed_walks /= (weighted_changed_walks > 1e-20).sum() + 1e-30
                 weighted_change_walks_list.append(weighted_changed_walks)
-                last_eliminated_walks = eliminated_walks
+                last_eliminated_walks = last_eliminated_walks | eliminated_walks
 
                 # --- setting a subset mask ---
                 layer_edge_masks = torch.ones((self.num_layers, edge_index_with_loop.shape[1]),

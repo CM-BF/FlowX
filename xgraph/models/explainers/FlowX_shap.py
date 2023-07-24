@@ -25,7 +25,7 @@ class FlowX_shap(FlowBase):
     }
 
     # def __init__(self, model, epochs=500, lr=3e-1, explain_graph=False, molecule=False):
-    def __init__(self, model, epochs=3000, lr=1e-4, explain_graph=False, molecule=False):
+    def __init__(self, model, epochs=500, lr=1e-4, explain_graph=False, molecule=False):
         super().__init__(model=model, epochs=epochs, lr=lr, explain_graph=explain_graph, molecule=molecule)
 
         self.score_structure = [(i % 2, term_idx)
@@ -213,6 +213,8 @@ class FlowX_shap(FlowBase):
 
         # --- score/mask transformer ---
         self.flow_mask = nn.Parameter(shap_flow_score[:, ex_label].clone().detach())
+        neg_mask = self.flow_mask.data < 0
+        pos_mask = ~neg_mask
         self.instance_norm = torch.nn.InstanceNorm1d(1, affine=True, track_running_stats=False).to(self.device)
 
         optimizer = torch.optim.Adam([{'params': self.flow_mask, 'lr': self.lr}, {'params': self.instance_norm.parameters(), 'lr': 1e-3, 'weight_decay': 1e-4}])
@@ -222,25 +224,28 @@ class FlowX_shap(FlowBase):
 
             iter_change_walks_list = iter_weighted_change_walks_list > 0
 
+            self.flow_mask.data[pos_mask] = self.flow_mask.data[pos_mask].relu()
+
             pred_colition_scores = iter_change_walks_list.float() @ self.flow_mask
 
-            norm_flow_mask = self.instance_norm(self.flow_mask[None, None, :, 0]).squeeze()
-            norm_flow_mask = gumbel_softmax(norm_flow_mask, 1, training=True)
+            # norm_flow_mask = self.instance_norm(self.flow_mask[None, None, :, 0]).squeeze()
+            # norm_flow_mask = gumbel_softmax(norm_flow_mask, 1, training=True)
+            #
+            # r = 1 - x_args.sparsity
+            # att = norm_flow_mask
+            # info_loss = (att * torch.log(att / r + EPS) +
+            #              (1 - att) * torch.log((1 - att) / (1 - r + EPS) + EPS)).mean()
 
-            r = 1 - x_args.sparsity
-            att = norm_flow_mask
-            info_loss = (att * torch.log(att / r + EPS) +
-                         (1 - att) * torch.log((1 - att) / (1 - r + EPS) + EPS)).mean()
-
-            loss = {'loss': mse_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum'), "info": info_loss}
+            loss = {'loss': l1_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum')}#, "info": info_loss}
 
             # loss = mse_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum')
 
             if epoch % 100 == 0:
-                print(f"epoch: {epoch}, loss: {loss['loss'].item()}, info: {loss['info'].item()}, sparsity: {(norm_flow_mask < 0.5).sum().float() / norm_flow_mask.shape[0]:.4f}")
+                print(f"epoch: {epoch}, loss: {loss['loss'].item()}")#, info: {loss['info'].item()}")#, sparsity: {(norm_flow_mask < 0.5).sum().float() / norm_flow_mask.shape[0]:.4f}")
 
             optimizer.zero_grad()
             sum(loss.values()).backward()
+            self.flow_mask.grad[neg_mask] = 0
             optimizer.step()
             # scheduler.step()
         return
@@ -291,7 +296,7 @@ class FlowX_shap(FlowBase):
                 weighted_changed_walks[eliminated_walks == last_eliminated_walks] = 0.
                 weighted_changed_walks /= (weighted_changed_walks > 1e-20).sum() + 1e-30
                 weighted_change_walks_list.append(weighted_changed_walks)
-                last_eliminated_walks = eliminated_walks
+                last_eliminated_walks = last_eliminated_walks | eliminated_walks
 
                 # --- setting a subset mask ---
                 layer_edge_masks = torch.ones((self.num_layers, edge_index_with_loop.shape[1]),
