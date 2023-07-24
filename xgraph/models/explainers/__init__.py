@@ -4,6 +4,7 @@ from .FlowMask import FlowMask
 from .FlowX import FlowX
 from .FlowX_minus import FlowX_minus
 from .FlowX_plus import FlowX_plus
+from .FlowX_shap import FlowX_shap
 from .GNN_GI import GNN_GI
 from .GNN_LRP import GNN_LRP
 from .GNNExplainer import GNNExplainer

@@ -32,7 +32,7 @@ class FlowX_plus(FlowBase):
                                 for term_idx in combinations(range(self.num_layers), i)
                                 ]
 
-        self.ns_iter = 30
+        self.ns_iter = 50
         self.ns_per_iter = None
         self.fidelity_plus = True
         self.score_lr = 0e-5 #2e-5

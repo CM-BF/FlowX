@@ -226,7 +226,7 @@ class XCollector(object):
                         gt_edges = torch.tensor(data.class_mask[0][target], device=edge_index_with_loop.device)
                         gt_edges = torch.stack([gt_edges[:, 1:].reshape(-1), gt_edges[:, :-1].reshape(-1)], dim=1)
                         top_edges = edge_scores[target].argsort(descending=True)
-                        top_edge_nodes = torch.cat([edge_index_with_loop[0][top_edges], edge_index_with_loop[1][top_edges]], dim=1)
+                        top_edge_nodes = torch.stack([edge_index_with_loop[0][top_edges], edge_index_with_loop[1][top_edges]], dim=1)
                         unique_ten = self.unitize_tfn(top_edge_nodes)
                         hit_indices = []
                         for gt_edge in gt_edges:

@@ -54,7 +54,8 @@ class GNN_LRP(FlowBase):
 
             # hyper-parameter gamma
             epsilon = 1e-20   # prevent from zero division
-            gamma = [2, 1, 1]
+            # gamma = [2, 1, 1]
+            gamma = [2, 1, 0]
 
             # --- record original weights of GNN ---
             ori_gnn_weights = []

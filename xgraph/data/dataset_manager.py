@@ -33,6 +33,8 @@ def load_dataset(name: str) -> dir:
     # To Do: use transform to argument data
     if name in molecule_set:
         return benchmark_datasets.molecule_datasets(name)
+    elif name == 'mutag':
+        return benchmark_datasets.mutag(name)
     elif name == 'ba_lrp':
         return benchmark_datasets.ba_lrp(name)
     elif name == 'ba_infe':

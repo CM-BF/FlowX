@@ -49,7 +49,7 @@ class Metric(object):
     score_func = roc_auc_score
     cur_task = ''
     set2task = {"ESOL": "reg-l1", "FreeSolv": "reg-l1", "Lipo": "reg-l1",
-                "PCBA": "bcs", "MUV": "bcs", "HIV": "bcs",
+                "PCBA": "bcs", "MUV": "bcs", "HIV": "bcs", "MUTAG": "bcs",
                 "BACE": "bcs", "BBBP": "bcs", "Tox21": "bcs",
                 "ToxCast": "bcs", "SIDER": "bcs", "ClinTox": "bcs",
                 "ba_lrp": "bcs", "ba_infe": "bcs", "ba_traffic": "bcs", "ba_shapes": "mcs", "graph_sst2": "bcs"}
@@ -60,7 +60,7 @@ class Metric(object):
         'reg-l1': l1_loss
     }
     set2score_name = {"ESOL": "rmse", "FreeSolv": "rmse", "Lipo": "rmse",
-                      "PCBA": "prc-auc", "MUV": "prc-auc", "HIV": "roc-auc",
+                      "PCBA": "prc-auc", "MUV": "prc-auc", "HIV": "roc-auc", "MUTAG": "accuracy",
                       "BACE": "accuracy", "BBBP": "accuracy", "Tox21": "accuracy",
                       "ToxCast": "roc-auc", "SIDER": "roc-auc", "ClinTox": "accuracy",
                       "ba_lrp": "accuracy", "ba_infe": "accuracy", "ba_traffic": "accuracy", "ba_shapes": "accuracy", "graph_sst2": "accuracy"}
