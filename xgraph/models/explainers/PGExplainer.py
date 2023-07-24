@@ -52,9 +52,11 @@ class PGExplainer(EdgeBase):
         # Calculate mask
         print('#D#Masks calculate...')
         edge_masks = []
+        edge_scores = []
         for ex_label in ex_labels:
-
-            edge_masks.append(self.control_sparsity(self.pg(x, edge_index, **kwargs)[1][0], sparsity=kwargs.get('sparsity')))
+            edge_attr = self.pg(x, edge_index, **kwargs)[1][0], sparsity=kwargs.get('sparsity')
+            edge_scores.append(edge_attr.detach())
+            edge_masks.append(self.control_sparsity(edge_attr))
             # edge_masks.append(self.gnn_explainer_alg(x, edge_index, ex_label))
 
 
@@ -66,4 +68,4 @@ class PGExplainer(EdgeBase):
 
         self.__clear_masks__()
 
-        return None, edge_masks, related_preds
+        return None, edge_masks, related_preds, edge_scores

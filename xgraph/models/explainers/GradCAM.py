@@ -75,6 +75,7 @@ class GradCAM(NodeBase):
 
         print('#D#Mask Calculate...')
         masks = []
+        edge_scores = []
         for ex_label in ex_labels:
             attr_wo_relu = self.explain_method.attribute(x, ex_label, additional_forward_args=edge_index)
             mask = normalize(attr_wo_relu.relu())
@@ -82,6 +83,7 @@ class GradCAM(NodeBase):
             if mask.shape.__len__() == 0:
                 mask = mask.unsqueeze(0)
             mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+            edge_scores.append(mask.detach())
             mask = self.control_sparsity(mask, kwargs.get('sparsity'))
             masks.append(mask.detach())
 
@@ -94,7 +96,7 @@ class GradCAM(NodeBase):
 
 
 
-        return None, masks, related_preds
+        return None, masks, related_preds, edge_scores
 
 
 class GraphLayerGradCam(ca.LayerGradCam):

@@ -162,10 +162,19 @@ class FlowX_minus(FlowBase):
         # loss = loss - 10 * torch.square(self.mask - 0.5).mean()
 
         # loss = loss + 1e-3 * torch.square(self.mask.sum() - self.mask.shape[0] * (1 - x_args.sparsity))
-        m = self.nec_suf_mask.sigmoid()
-        loss = loss + self.coeffs['edge_size'] * m.sum()
+        # m = self.nec_suf_mask.sigmoid()
+        # loss = loss + self.coeffs['edge_size'] * m.sum()
         # ent = -m * torch.log(m + EPS) - (1 - m) * torch.log(1 - m + EPS)
         # loss = loss + self.coeffs['edge_ent'] * ent.mean()
+
+        eps = 1e-6
+        # r = self.get_r(100, 0.1, self.epoch, final_r=x_args.sparsity)
+        r = 1 - x_args.sparsity
+        att = self.mask
+        info_loss = (att * torch.log(att / r + eps) +
+                     (1 - att) * torch.log((1 - att) / (1 - r + eps) + eps)).mean()
+
+        loss = {'loss': loss, 'info': info_loss}
 
         return loss
 
@@ -213,9 +222,12 @@ class FlowX_minus(FlowBase):
                                                  dim=1).detach()
 
         # train to get the mask
-        optimizer = torch.optim.Adam([{'params': self.nec_suf_mask}],
+        # optimizer = torch.optim.Adam([{'params': self.nec_suf_mask}],
                                       # {'params': self.iter_weighted_change_walks_list, 'lr': self.score_lr}],
-                                     lr=self.lr)
+                                     # lr=self.lr)
+        self.instance_norm = torch.nn.InstanceNorm1d(1, affine=True, track_running_stats=False).to(self.device)
+        optimizer = torch.optim.Adam([{'params': self.nec_suf_mask, 'lr': self.lr},
+                                      {'params': self.instance_norm.parameters(), 'lr': 1e-1}], weight_decay=1e-5)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 400], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 450], gamma=1e-1)
@@ -239,23 +251,27 @@ class FlowX_minus(FlowBase):
                                                                                       self.num_layers,
                                                                                       -1).sum(0)
             mask = self.layer_edge_mask.sum(0)
-            mask = mask - mask.min()
-            mask = mask / (mask.max() + EPS)
 
             # Option 1: make it harder: draw back: cannot control sparsity
             # mask = mask * 500 - 250
             # mask = mask.sigmoid()
-            climb = True
+            climb = False
             if climb:
-                # pass
+                mask = mask - mask.min()
+                mask = mask / (mask.max() + EPS)
                 mask = mask ** 8
+                mask = mask - mask.min()
+                mask = mask / (mask.max() + EPS)
             else:
-                end_epoch = 300
-                temperature = float(t0 * ((t1 / t0) ** (epoch / end_epoch))) if epoch < end_epoch else t1
+                # end_epoch = 300
+                # temperature = float(t0 * ((t1 / t0) ** (epoch / end_epoch))) if epoch < end_epoch else t1
+                # mask = gumbel_softmax(mask, temperature, training=True)
+                mask = self.instance_norm(mask[None, None, :]).squeeze()
+                self.epoch = epoch
+                temperature = 1
                 mask = gumbel_softmax(mask, temperature, training=True)
 
-            mask = mask - mask.min()
-            mask = mask / (mask.max() + EPS)
+
             cur_sparsity = (mask < 0.5).sum().float() / mask.shape[0]
             # if cur_sparsity < x_args.sparsity:
             #     # --- early stop ---
@@ -348,7 +364,7 @@ class FlowX_minus(FlowBase):
 
             # --- compute subsets' outputs of current iteration ---
             for layer_idx in range(self.num_layers):
-                # --- Attention self-loop will be put at last because of the model will do it ---
+                # --- Attention self-loop will be put at last because the model will do it ---
                 self.edge_mask[layer_idx].data = torch.cat(
                     [layer_edge_mask_list[:, layer_idx, :self.num_edges].reshape(-1),
                      layer_edge_mask_list[:, layer_idx, self.num_edges:].reshape(-1)])

@@ -8,6 +8,7 @@ Author: Shurui Gui
 import random
 import torch_geometric
 from torch_geometric.data import InMemoryDataset
+from torch_geometric.utils import k_hop_subgraph
 from xgraph.definitions import ROOT_DIR
 import pickle as pkl
 
@@ -536,3 +537,101 @@ class SentiGraphDataset(InMemoryDataset):
             data_list = [self.pre_transform(data) for data in data_list]
             self.data, self.slices = self.collate(data_list)
         torch.save((self.data, self.slices, self.supplement), self.processed_paths[0])
+
+
+
+class BA_Traffic(InMemoryDataset):
+
+    def __init__(self, root, name, num_per_class, transform=None, pre_transform=None):
+        self.num_per_class = num_per_class
+        self.name = name
+        super().__init__(os.path.join(root, name), transform, pre_transform)
+        self.data, self.slices = torch.load(self.processed_paths[0])
+
+    @property
+    def processed_file_names(self):
+        return [f'data{self.num_per_class}.pt']
+
+    def gen_data(self, label):
+        num_node = 20   # np.random.randint(10, 20)
+        data = self.create_road(num_node)
+        mask_c0 = []
+        mask_c1 = []
+
+        max_deg_id = torch.stack([(data.edge_index[0] == node_idx).float().sum() for node_idx in range(num_node)], dim=0).argmax()
+        data.x[max_deg_id][0] = 1
+        data, mask = self.create_traffic(data, max_deg_id, traffic='bike')
+        mask_c0.extend(mask)
+        data, mask = self.create_traffic(data, max_deg_id, traffic='car')
+        mask_c1.extend(mask)
+        if label == 0:
+            data, mask = self.create_traffic(data, max_deg_id, traffic='bike')
+            mask_c0.extend(mask)
+            data.y = torch.tensor([[0]], dtype=torch.float)
+        elif label == 1:
+            data, mask = self.create_traffic(data, max_deg_id, traffic='car')
+            mask_c1.extend(mask)
+            data.y = torch.tensor([[1]], dtype=torch.float)
+        else:
+            raise Exception('Label option error.')
+
+        data.class_mask = []
+        data.class_mask.append(mask_c0)
+        data.class_mask.append(mask_c1)
+
+        return data
+
+    def create_road(self, num_node):
+        x = torch.tensor([[-1, 0, 0], [-1, 0, 0]], dtype=torch.float)
+        edge_index = torch.tensor([[0, 1], [1, 0]], dtype=torch.long)
+        data = Data(x=x, edge_index=edge_index, y=torch.tensor([[0]], dtype=torch.float))
+        for i in range(2, num_node):
+            data.x = torch.cat([data.x, torch.tensor([[-1, 0, 0]], dtype=torch.float)], dim=0)
+            deg = torch.stack([(data.edge_index[0] == node_idx).float().sum() for node_idx in range(i)], dim=0)
+            sum_deg = deg.sum(dim=0, keepdim=True)
+            probs = (deg / sum_deg).unsqueeze(0)
+            prob_dist = torch.distributions.Categorical(probs)
+            node_pick = prob_dist.sample().squeeze()
+            data.edge_index = torch.cat([data.edge_index,
+                                         torch.tensor([[node_pick, i], [i, node_pick]], dtype=torch.long)], dim=1)
+        return data
+
+    def create_traffic(self, data, max_deg_id, traffic):
+        # Find two different nodes in the neighborhood of max_deg_id node
+        # using k-hop-subgraph function, output the node id
+        neighbor_id = data.edge_index[1][data.edge_index[0] == max_deg_id]
+        # Randomly choose two nodes from the neighbor_id, and they should be different
+        nei_id = []
+        while nei_id == []:
+            chosen_id = np.random.choice(neighbor_id, 2, replace=False)
+            nei_id = data.edge_index[1][data.edge_index[0] == chosen_id[1]].tolist()
+            nei_id.remove(max_deg_id)
+        chosen_id = np.concatenate([chosen_id, np.random.choice(nei_id, 1)])
+        if traffic == 'bike':
+            data.x[chosen_id[0]][1] += 1
+            data.x[chosen_id[2]][1] += 1
+        elif traffic == 'car':
+            data.x[chosen_id[0]][2] += 1
+            data.x[chosen_id[2]][2] += 1
+        else:
+            raise Exception('Traffic option error.')
+
+        mask = [[chosen_id[0].item(), max_deg_id.item(), chosen_id[1].item(), chosen_id[2].item()]]
+        return data, mask
+
+    def process(self):
+        random_seed = 314
+        random.seed(random_seed)
+        np.random.seed(random_seed)
+        torch.manual_seed(random_seed)
+        torch.cuda.manual_seed(random_seed)
+        torch.cuda.manual_seed_all(random_seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        data_list = []
+        for i in range(self.num_per_class):
+            data_list.append(self.gen_data(0))
+            data_list.append(self.gen_data(1))
+
+        data, slices = self.collate(data_list)
+        torch.save((data, slices), self.processed_paths[0])

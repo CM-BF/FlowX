@@ -169,6 +169,7 @@ class RC_Explainer_Batch_star(RC_Explainer_Batch):
 
         print('#D#Mask Calculate...')
         masks = []
+        edge_scores = []
         for ex_label in ex_labels:
             att = self.gen_explanation(Data(x=x, edge_index=edge_index, y=ex_label,
                                             batch=torch.zeros(x.shape[0], dtype=int, device=self.device)),
@@ -176,6 +177,7 @@ class RC_Explainer_Batch_star(RC_Explainer_Batch):
             mask = att.float().to(self.device)
             if mask.shape.__len__() == 0:
                 mask = mask.unsqueeze(0)
+            edge_scores.append(mask.detach())
             mask = self.control_sparsity(mask, kwargs.get('sparsity'))
             masks.append(mask.detach())
 
@@ -186,7 +188,7 @@ class RC_Explainer_Batch_star(RC_Explainer_Batch):
             with self.connect_mask(self):
                 related_preds = self.eval_related_pred(x, edge_index, masks, **kwargs)
 
-        return None, masks, related_preds
+        return None, masks, related_preds, edge_scores
 
     def policy(self, graph, state, train_flag=False):
 

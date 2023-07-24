@@ -39,7 +39,7 @@ class VGIB(EdgeBase):
         torch.save(self.VGIB_model.state_dict(), path)
 
     def load_model(self, path):
-        self.VGIB_model.load_state_dict(torch.load(path))
+        self.VGIB_model.load_state_dict(torch.load(path, map_location=self.device))
 
     def set_requires_grad(self, net, requires_grad=False):
 
@@ -139,6 +139,7 @@ class VGIB(EdgeBase):
         if mask.shape.__len__() == 0:
             mask = mask.unsqueeze(0)
         mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+        edge_scores = [mask.detach(), mask.detach()]
         mask = self.control_sparsity(mask, kwargs.get('sparsity'))
         masks = []
         for ex_label in ex_labels:
@@ -151,7 +152,7 @@ class VGIB(EdgeBase):
             with self.connect_mask(self):
                 related_preds = self.eval_related_pred(x, edge_index, masks, **kwargs)
 
-        return None, masks, related_preds
+        return None, masks, related_preds, edge_scores
 
 
 """Convolutional layers."""

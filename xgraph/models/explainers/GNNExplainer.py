@@ -1,3 +1,4 @@
+import copy
 import os
 
 import torch
@@ -163,6 +164,8 @@ class GNNExplainer(EdgeBase):
             with self.connect_mask(self):
                 edge_masks = torch.load(store_file)
 
+        edge_scores = copy.deepcopy(edge_masks)
+
         edge_masks = [self.control_sparsity(edge_mask, sparsity=kwargs.get('sparsity')) for edge_mask in edge_masks]
         print('#D#Predict...')
 
@@ -171,7 +174,7 @@ class GNNExplainer(EdgeBase):
 
         # self.__clear_masks__()
 
-        return None, edge_masks, related_preds
+        return None, edge_masks, related_preds, edge_scores
 
 
 

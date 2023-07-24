@@ -56,6 +56,8 @@ class XCollector(object):
         self.masks: Union[List, List[List[Tensor]]] = []
         self.data_list = []
         self.hard_masks: Union[List, List[List[Tensor]]] = []
+        self.flow_masks = []
+        self.edge_scores = []
 
         self.metrics = {'fidelity': None, 'regular_fidelity': None, 'infidelity': None, 'regular_infidelity': None, 'contrastivity': None, 'sparsity': None, 'regular_infidelity': None, 'acc': None, 'score': None}
 
@@ -63,7 +65,9 @@ class XCollector(object):
                      masks: List[Tensor],
                      related_preds: dir,
                      label: int,
-                     data) -> None:
+                     data,
+                     walks,
+                     edge_scores) -> None:
 
         if self.metrics_exist():
             self.metrics_clear()
@@ -76,6 +80,9 @@ class XCollector(object):
             self.__targets.append(label)
             self.masks.append(masks)
             self.data_list.append(data)
+            if walks is not None:
+                self.flow_masks.append(walks)
+            self.edge_scores.append(edge_scores)
 
             # # make the masks binary
             # hard_masks = copy.deepcopy(masks)
@@ -196,22 +203,70 @@ class XCollector(object):
                 # self.metrics['acc'] = 0.
                 return None
             acc = []
-            for graph_idx, (data, raw_masks, target) in enumerate(zip(self.data_list, self.masks, self.__targets)):
-                gt_edges = data.class_mask[0][target]
-                edge_index_with_loop, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
-                choosen_edges = edge_index_with_loop.T[raw_masks[target] > 0].tolist()
-                total_edge_num = gt_edges.__len__()
-                hit_num = 0
+            if self.loader.dataset.dataset.name == 'ba_traffic':
+                if self.flow_masks:
+                    for graph_idx, (data, raw_masks, flows, target) in enumerate(zip(self.data_list, self.masks, self.flow_masks, self.__targets)):
+                        edge_index_with_loop, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
+                        flow_ids = flows['ids']
+                        flow_score = flows['score'][:flow_ids.shape[0], target].reshape(-1)
+                        top_flows = torch.argsort(flow_score, descending=True)
+                        top_flow_nodes = torch.cat([edge_index_with_loop[0][flow_ids[top_flows]], edge_index_with_loop[1][flow_ids[top_flows][:, -1:]]], dim=1)
+                        unique_tfn = self.unitize_tfn(top_flow_nodes)
+                        gt_flow_nodes = torch.tensor(data.class_mask[0][target], device=unique_tfn.device)
+                        hit_indices = []
+                        for gt_flow in gt_flow_nodes:
+                            hit_idx = min((unique_tfn == gt_flow).all(dim=1).nonzero().item(), (unique_tfn == gt_flow.flip(0)).all(dim=1).nonzero().item())
+                            hit_indices.append(hit_idx)
+                        num_cover = max(hit_indices) + 1
+                        ratio_cover = num_cover / unique_tfn.shape[0]
+                        acc.append(1 - ratio_cover)
+                else:
+                    for graph_idx, (data, raw_masks, edge_scores, target) in enumerate(zip(self.data_list, self.masks, self.edge_scores, self.__targets)):
+                        edge_index_with_loop, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
+                        gt_edges = torch.tensor(data.class_mask[0][target], device=edge_index_with_loop.device)
+                        gt_edges = torch.stack([gt_edges[:, 1:].reshape(-1), gt_edges[:, :-1].reshape(-1)], dim=1)
+                        top_edges = edge_scores[target].argsort(descending=True)
+                        top_edge_nodes = torch.cat([edge_index_with_loop[0][top_edges], edge_index_with_loop[1][top_edges]], dim=1)
+                        unique_ten = self.unitize_tfn(top_edge_nodes)
+                        hit_indices = []
+                        for gt_edge in gt_edges:
+                            hit_idx = min((unique_ten == gt_edge).all(dim=1).nonzero().item(),
+                                          (unique_ten == gt_edge.flip(0)).all(dim=1).nonzero().item())
+                            hit_indices.append(hit_idx)
+                        num_cover = max(hit_indices) + 1
+                        ratio_cover = num_cover / unique_ten.shape[0]
+                        acc.append(1 - ratio_cover)
 
-                for gt_edge in gt_edges:
-                    if (gt_edge in choosen_edges) or ([gt_edge[1], gt_edge[0]] in choosen_edges):
-                        hit_num += 1
 
-                acc.append(float(hit_num) / float(total_edge_num))
+            else:
+                for graph_idx, (data, raw_masks, target) in enumerate(zip(self.data_list, self.masks, self.__targets)):
+                    gt_edges = data.class_mask[0][target]
+                    edge_index_with_loop, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
+                    if raw_masks[target].shape[0] == edge_index_with_loop.shape[1]:
+                        choosen_edges = edge_index_with_loop.T[raw_masks[target] > 0].tolist()
+                        total_edge_num = gt_edges.__len__()
+                    else:
+                        choosen_edges = data.edge_index.T[raw_masks[target] > 0].tolist()
+                        total_edge_num = gt_edges.__len__() - np.sum([l == r for l, r in gt_edges])
+
+                    hit_num = 0
+
+                    for gt_edge in gt_edges:
+                        if (gt_edge in choosen_edges) or ([gt_edge[1], gt_edge[0]] in choosen_edges):
+                            hit_num += 1
+
+                    acc.append(float(hit_num) / float(total_edge_num))
 
             self.metrics['acc'] = np.mean(acc)
 
             return self.metrics['acc']
+
+    def unitize_tfn(self, top_flow_nodes):
+        sorted_tfn = torch.sort(top_flow_nodes, dim=1)[0]
+        diffs = sorted_tfn[:, 1:] - sorted_tfn[:, :-1]
+        unique_mask = (diffs > 0).all(dim=1)
+        unique_tfn = top_flow_nodes[unique_mask]
+        return unique_tfn
 
     # @property
     # def contrastivity(self):
@@ -261,7 +316,7 @@ def sample_explain(explainer, data, x_collector: XCollector, **kwargs):
         return
 
     explain_tik = time.time()
-    walks, masks, related_preds = \
+    walks, masks, related_preds, edge_scores = \
         explainer(data.x, data.edge_index, **kwargs)
     explain_tok = time.time()
     print(f"#D#Explainer prediction time: {explain_tok - explain_tik:.4f}")
@@ -277,7 +332,8 @@ def sample_explain(explainer, data, x_collector: XCollector, **kwargs):
     x_collector.collect_data(masks,
                              related_preds,
                              target_label,
-                             data=data)
+                             data=data,
+                             walks=walks, edge_scores=edge_scores)
     # print(x_collector.fidelity)
 
     try:

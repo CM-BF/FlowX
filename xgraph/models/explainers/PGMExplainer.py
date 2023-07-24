@@ -13,6 +13,7 @@ from xgraph import data_args
 from xgraph.args import x_args
 from xgraph.models.utils import subgraph
 from xgraph.definitions import ROOT_DIR
+import copy
 
 EPS = 1e-15
 
@@ -89,6 +90,8 @@ class PGMExplainer(NodeBase):
         else:
             mask = torch.load(store_file)
 
+        edge_scores = copy.deepcopy(mask)
+
         mask = self.control_sparsity(mask, kwargs.get('sparsity'))
         masks = [mask.detach() for _ in ex_labels]
 
@@ -102,4 +105,4 @@ class PGMExplainer(NodeBase):
 
 
 
-        return None, masks, related_preds
+        return None, masks, related_preds, edge_scores

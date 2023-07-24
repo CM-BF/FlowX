@@ -52,7 +52,7 @@ class Metric(object):
                 "PCBA": "bcs", "MUV": "bcs", "HIV": "bcs",
                 "BACE": "bcs", "BBBP": "bcs", "Tox21": "bcs",
                 "ToxCast": "bcs", "SIDER": "bcs", "ClinTox": "bcs",
-                "ba_lrp": "bcs", "ba_infe": "bcs", "ba_shapes": "mcs", "graph_sst2": "bcs"}
+                "ba_lrp": "bcs", "ba_infe": "bcs", "ba_traffic": "bcs", "ba_shapes": "mcs", "graph_sst2": "bcs"}
     set2task = {item[0].lower(): item[1] for item in set2task.items()}
     task2loss = {
         'bcs': cross_entropy_with_logit,
@@ -63,7 +63,7 @@ class Metric(object):
                       "PCBA": "prc-auc", "MUV": "prc-auc", "HIV": "roc-auc",
                       "BACE": "accuracy", "BBBP": "accuracy", "Tox21": "accuracy",
                       "ToxCast": "roc-auc", "SIDER": "roc-auc", "ClinTox": "accuracy",
-                      "ba_lrp": "accuracy", "ba_infe": "accuracy", "ba_shapes": "accuracy", "graph_sst2": "accuracy"}
+                      "ba_lrp": "accuracy", "ba_infe": "accuracy", "ba_traffic": "accuracy", "ba_shapes": "accuracy", "graph_sst2": "accuracy"}
     set2score_name = {item[0].lower(): item[1] for item in set2score_name.items()}
     score_name = ''
 

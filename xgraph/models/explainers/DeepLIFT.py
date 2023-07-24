@@ -48,6 +48,7 @@ class DeepLIFT(NodeBase):
 
         print('#D#Mask Calculate...')
         masks = []
+        edge_scores = []
         for ex_label in ex_labels:
 
             if self.explain_graph:
@@ -63,6 +64,7 @@ class DeepLIFT(NodeBase):
             if mask.shape.__len__() == 0:
                 mask = mask.unsqueeze(0)
             mask = (mask[self_loop_edge_index[0]] + mask[self_loop_edge_index[1]]) / 2
+            edge_scores.append(mask.detach())
             mask = self.control_sparsity(mask, kwargs.get('sparsity'))
             masks.append(mask.detach())
 
@@ -75,4 +77,4 @@ class DeepLIFT(NodeBase):
                 related_preds = self.eval_related_pred(x, edge_index, masks, **kwargs)
 
 
-        return None, masks, related_preds
+        return None, masks, related_preds, edge_scores

@@ -41,6 +41,8 @@ def load_dataset(name: str) -> dir:
         return benchmark_datasets.ba_shapes(name)
     elif name == 'graph_sst2':
         return benchmark_datasets.graph_sst2(name)
+    elif name == 'ba_traffic':
+        return benchmark_datasets.ba_traffic(name)
     print(f'#E#Dataset {name} does not exist.')
     sys.exit(1)
 

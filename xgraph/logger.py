@@ -15,14 +15,14 @@ from xgraph.args import GeneralArgs
 
 general_args = GeneralArgs().parse_args(known_only=True)
 
-with open(os.path.join(ROOT_DIR, 'config', 'mail_setting.json')) as f:
-    mail_setting = json.load(f)
-    mail_setting = json_mail_setting(mail_setting)
+# with open(os.path.join(ROOT_DIR, 'config', 'mail_setting.json')) as f:
+#     mail_setting = json.load(f)
+#     mail_setting = json_mail_setting(mail_setting)
 
 create_logger(name='GNN_log',
               file=os.path.join(ROOT_DIR, 'log', general_args.log_file),
-              enable_mail=True,
-              mail_setting=mail_setting,
+              # enable_mail=True,
+              # mail_setting=mail_setting,
               sub_print=True)
 
 

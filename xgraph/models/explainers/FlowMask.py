@@ -186,8 +186,10 @@ class FlowMask(FlowBase):
         ex_labels = tuple(torch.tensor([label]).to(data_args.device) for label in labels)
         start = time.time()
         masks = []
+        edge_scores = []
         for ex_label in ex_labels:
             edge_attr = self.explain_edges_with_loop(x, walks, ex_label)
+            edge_scores.append(edge_attr.detach())
             mask = edge_attr
             mask = self.control_sparsity(mask, kwargs.get('sparsity'))
             # mask[mask >= 1e-1] = float('inf')
@@ -198,4 +200,4 @@ class FlowMask(FlowBase):
             related_preds = self.eval_related_pred(x, edge_index, masks, **kwargs)
 
 
-        return walks, masks, related_preds
+        return walks, masks, related_preds, edge_scores
