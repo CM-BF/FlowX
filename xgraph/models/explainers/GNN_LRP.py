@@ -53,8 +53,7 @@ class GNN_LRP(FlowBase):
         def compute_walk_score():
 
             # hyper-parameter gamma
-            epsilon = 1e-20   # prevent from zero division
-            # gamma = [2, 1, 1]
+            epsilon = 1e-10   # prevent from zero division
             gamma = [2, 1, 0]
 
             # --- record original weights of GNN ---
@@ -63,7 +62,7 @@ class GNN_LRP(FlowBase):
             clear_probe = x
             for i, walk_step in enumerate(walk_steps):
                 modules = walk_step['module']
-                gamma_ = gamma[i] if i <= 1 else 1
+                gamma_ = gamma[i] / 4 if i <= 1 else 0
                 if hasattr(modules[0], 'nn'):
                     clear_probe = modules[0](clear_probe, edge_index, probe=False)
                     # clear nodes that are not created by user
@@ -87,7 +86,7 @@ class GNN_LRP(FlowBase):
                 gamma_module = copy.deepcopy(modules[0])
                 if hasattr(modules[0], 'weight'):
                     ori_fc_weights.append(modules[0].weight.data)
-                    gamma_ = 1
+                    gamma_ = 0
                     gamma_module.weight.data = ori_fc_weights[i] + gamma_ * ori_fc_weights[i].relu()
                 else:
                     ori_fc_weights.append(None)
@@ -180,7 +179,7 @@ class GNN_LRP(FlowBase):
             torch.save(walks, store_file)
         else:
             print('skip predict')
-            walks = torch.load(store_file)
+            walks = torch.load(store_file, map_location=self.device)
 
         # --- Debug ---
         # walk_node_indices_list = []

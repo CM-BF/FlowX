@@ -88,9 +88,9 @@ class PGMExplainer(NodeBase):
             # --- save results for different Sparsity ---
             torch.save(mask, store_file)
         else:
-            mask = torch.load(store_file)
+            mask = torch.load(store_file, map_location=self.device)
 
-        edge_scores = copy.deepcopy(mask)
+        edge_scores = [copy.deepcopy(mask.detach()) for _ in ex_labels]
 
         mask = self.control_sparsity(mask, kwargs.get('sparsity'))
         masks = [mask.detach() for _ in ex_labels]

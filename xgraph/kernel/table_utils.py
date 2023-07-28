@@ -40,14 +40,27 @@ def update_table(args, explain_collector, result_df):
 
 
 def expand_table(args, explain_collector, result_df):
+
+    # --- expand table ---
+    # --- For new method ---
     if (0.5, args['explain'].explainer) not in result_df.index:
         result_df = pd.concat([result_df, pd.DataFrame(index=pd.MultiIndex.from_product(
             [[0.5, 0.6, 0.7, 0.8, 0.9], [args['explain'].explainer]], names=result_df.index.names
         ))]).sort_index()
+
+    # --- For new sparsity ---
+    if (explain_collector.sparsity, args['explain'].explainer) not in result_df.index:
+        result_df = pd.concat([result_df, pd.DataFrame(index=pd.MultiIndex.from_product(
+            [[explain_collector.sparsity], [args['explain'].explainer]], names=result_df.index.names
+        ))]).sort_index()
+
+    # --- For new dataset ---
     if (args['common'].dataset_name, 'Fidelity+') not in result_df.columns:
         result_df = pd.concat([result_df, pd.DataFrame(columns=pd.MultiIndex.from_product(
             [[args['common'].dataset_name], ['Fidelity+', 'Fidelity-']], names=result_df.columns.names
         ))]).sort_index(axis=1)
+
+    # --- For new metric ---
     if (args['common'].dataset_name, 'Accuracy') not in result_df.columns and explain_collector.acc is not None:
         result_df = pd.concat([result_df, pd.DataFrame(columns=pd.MultiIndex.from_product(
             [[args['common'].dataset_name], ['Accuracy']], names=result_df.columns.names

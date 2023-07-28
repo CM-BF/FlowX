@@ -215,9 +215,10 @@ class FlowX_shap(FlowBase):
         self.flow_mask = nn.Parameter(shap_flow_score[:, ex_label].clone().detach())
         neg_mask = self.flow_mask.data < 0
         pos_mask = ~neg_mask
-        self.instance_norm = torch.nn.InstanceNorm1d(1, affine=True, track_running_stats=False).to(self.device)
+        self.instance_norm = torch.nn.InstanceNorm1d(1, affine=False, track_running_stats=False).to(self.device)
+        self.beta_weight = nn.Parameter(torch.tensor([1.], device=self.device))
 
-        optimizer = torch.optim.Adam([{'params': self.flow_mask, 'lr': self.lr}, {'params': self.instance_norm.parameters(), 'lr': 1e-3, 'weight_decay': 1e-4}])
+        optimizer = torch.optim.Adam([{'params': self.flow_mask, 'lr': self.lr}])#, {'params': self.beta_weight, 'lr': 1e-2, 'weight_decay': 0e-4}])
 
 
         for epoch in range(0, self.epochs):
@@ -228,20 +229,20 @@ class FlowX_shap(FlowBase):
 
             pred_colition_scores = iter_change_walks_list.float() @ self.flow_mask
 
-            # norm_flow_mask = self.instance_norm(self.flow_mask[None, None, :, 0]).squeeze()
-            # norm_flow_mask = gumbel_softmax(norm_flow_mask, 1, training=True)
-            #
-            # r = 1 - x_args.sparsity
-            # att = norm_flow_mask
-            # info_loss = (att * torch.log(att / r + EPS) +
-            #              (1 - att) * torch.log((1 - att) / (1 - r + EPS) + EPS)).mean()
+            norm_flow_mask = self.instance_norm(self.flow_mask[None, None, :, 0]).squeeze() * 100# * self.beta_weight
+            norm_flow_mask = gumbel_softmax(norm_flow_mask, 1, training=True)
 
-            loss = {'loss': l1_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum')}#, "info": info_loss}
+            r = 1 - x_args.sparsity
+            att = norm_flow_mask
+            info_loss = (att * torch.log(att / r + EPS) +
+                         (1 - att) * torch.log((1 - att) / (1 - r + EPS) + EPS)).mean()
+
+            loss = {'loss': mse_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum'), "info": info_loss}
 
             # loss = mse_loss(pred_colition_scores, iter_changed_subsets_score_list[..., ex_label], reduction='sum')
 
             if epoch % 100 == 0:
-                print(f"epoch: {epoch}, loss: {loss['loss'].item()}")#, info: {loss['info'].item()}")#, sparsity: {(norm_flow_mask < 0.5).sum().float() / norm_flow_mask.shape[0]:.4f}")
+                print(f"epoch: {epoch}, loss: {loss['loss'].item()}, info: {loss['info'].item()}, sparsity: {(norm_flow_mask < 0.5).sum().float() / norm_flow_mask.shape[0]:.4f}")
 
             optimizer.zero_grad()
             sum(loss.values()).backward()

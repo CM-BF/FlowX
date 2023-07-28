@@ -90,7 +90,7 @@ class GNN_GI(FlowBase):
             torch.save(walks, store_file)
         else:
             print('skip predict')
-            walks = torch.load(store_file)
+            walks = torch.load(store_file, map_location=self.device)
 
         # --- Apply edge mask evaluation ---
         with torch.no_grad():

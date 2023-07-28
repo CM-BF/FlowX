@@ -54,18 +54,14 @@ class PGExplainer(EdgeBase):
         edge_masks = []
         edge_scores = []
         for ex_label in ex_labels:
-            edge_attr = self.pg(x, edge_index, **kwargs)[1][0], sparsity=kwargs.get('sparsity')
+            edge_attr = self.pg(x, edge_index, **kwargs)[1][0]
             edge_scores.append(edge_attr.detach())
-            edge_masks.append(self.control_sparsity(edge_attr))
+            edge_masks.append(self.control_sparsity(edge_attr, sparsity=kwargs.get('sparsity')))
             # edge_masks.append(self.gnn_explainer_alg(x, edge_index, ex_label))
 
 
         print('#D#Predict...')
-        self.__clear_masks__()
-        self.__set_masks__(x, edge_index)
-        with torch.no_grad():
+        with self.connect_mask(self):
             related_preds = self.eval_related_pred(x, edge_index, edge_masks, **kwargs)
-
-        self.__clear_masks__()
 
         return None, edge_masks, related_preds, edge_scores

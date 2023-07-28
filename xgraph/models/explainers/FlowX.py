@@ -129,7 +129,7 @@ class FlowX(FlowBase):
             # --- save results for different Sparsity ---
             torch.save(walks, store_file)
         else:
-            walks = torch.load(store_file)
+            walks = torch.load(store_file, map_location=self.device)
 
         # specify to edge with self-loop mask prediction
         labels = tuple(i for i in range(data_args.num_classes))

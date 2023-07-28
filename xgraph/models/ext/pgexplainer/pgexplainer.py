@@ -330,7 +330,7 @@ class PGExplainer(nn.Module):
 
     """
     def __init__(self, model, in_channels: int, device, explain_graph: bool = True, epochs: int = 30,
-                 lr: float = 50e-3, coff_size: float = 0.01, coff_ent: float = 5e-4,
+                 lr: float = 5e-3, coff_size: float = 1e-4, coff_ent: float = 1e-2,
                  t0: float = 5.0, t1: float = 1.0, num_hops: Optional[int] = None):
         super(PGExplainer, self).__init__()
         self.model = model
@@ -417,20 +417,20 @@ class PGExplainer(nn.Module):
                 return module.flow
         return 'source_to_target'
 
-    def __loss__(self, prob: Tensor, ori_pred: int):
+    def __loss__(self, prob: Tensor, ori_pred: int, edge_mask):
         logit = prob[ori_pred]
         logit = logit + EPS
         pred_loss = - torch.log(logit)
         # size
-        edge_mask = self.mask_sigmoid
-        size_loss = self.coff_size * torch.sum(edge_mask)
+        # more robust
+        size_loss = self.coff_size * (torch.mean(edge_mask) - 0.75).relu()
 
         # entropy
         edge_mask = edge_mask * 0.99 + 0.005
         mask_ent = - edge_mask * torch.log(edge_mask) - (1 - edge_mask) * torch.log(1 - edge_mask)
         mask_ent_loss = self.coff_ent * torch.mean(mask_ent)
 
-        loss = pred_loss + size_loss + mask_ent_loss
+        loss = {'loss': pred_loss, 'size': size_loss, 'ent': mask_ent_loss}
         return loss
 
     def get_subgraph(self,
@@ -481,7 +481,7 @@ class PGExplainer(nn.Module):
     def concrete_sample(self, log_alpha: Tensor, beta: float = 1.0, training: bool = True):
         r""" Sample from the instantiation of concrete distribution when training """
         if training:
-            random_noise = torch.rand(log_alpha.shape)
+            random_noise = torch.empty_like(log_alpha).uniform_(1e-10, 1 - 1e-10)
             random_noise = torch.log(random_noise) - torch.log(1.0 - random_noise)
             gate_inputs = (random_noise.to(log_alpha.device) + log_alpha) / beta
             gate_inputs = gate_inputs.sigmoid()
@@ -514,8 +514,9 @@ class PGExplainer(nn.Module):
         """
         nodesize = embed.shape[0]
         feature_dim = embed.shape[1]
-        f1 = embed.unsqueeze(1).repeat(1, nodesize, 1).reshape(-1, feature_dim)
-        f2 = embed.unsqueeze(0).repeat(nodesize, 1, 1).reshape(-1, feature_dim)
+        col, row = edge_index
+        f1 = embed[col]
+        f2 = embed[row]
 
         # using the node embedding to calculate the edge weight
         f12self = torch.cat([f1, f2], dim=-1)
@@ -523,17 +524,16 @@ class PGExplainer(nn.Module):
         for elayer in self.elayers:
             h = elayer(h)
         values = h.reshape(-1)
-        values = self.concrete_sample(values, beta=tmp, training=training)
-        self.mask_sigmoid = values.reshape(nodesize, nodesize)
+        edge_mask = self.concrete_sample(values, beta=tmp, training=training)
 
         # set the symmetric edge weights
-        sym_mask = (self.mask_sigmoid + self.mask_sigmoid.transpose(0, 1)) / 2
-        edge_mask = sym_mask[edge_index[0], edge_index[1]]
+        # sym_mask = (self.mask_sigmoid + self.mask_sigmoid.transpose(0, 1)) / 2
+        # edge_mask = values[edge_index[0], edge_index[1]]
 
         # inverse the weights before sigmoid in MessagePassing Module
         # edge_mask = inv_sigmoid(edge_mask)
         self.__clear_masks__()
-        self.__set_masks__(x, edge_index, edge_mask)
+        self.__set_masks__(x, edge_index, torch.log(edge_mask / (1 - edge_mask + EPS) + EPS))
 
         # the model prediction with edge mask
         logits = self.model(x, edge_index)
@@ -542,9 +542,10 @@ class PGExplainer(nn.Module):
         self.__clear_masks__()
         return probs, edge_mask
 
-    def train_explanation_network(self, dataset, use_pred_label=False):
+    def train_explanation_network(self, dataset, use_pred_label=False, sparsity=None):
         r""" training the explanation network by gradient descent(GD) using Adam optimizer """
-        optimizer = Adam(self.elayers.parameters(), lr=self.lr)
+        self.sparsity = sparsity
+        optimizer = Adam(self.elayers.parameters(), lr=self.lr, weight_decay=1e-5)
         if self.explain_graph:
             with torch.no_grad():
                 dataset_indices = list(range(len(dataset)))
@@ -556,7 +557,7 @@ class PGExplainer(nn.Module):
                     data.to(self.device)
                     edge_index, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
                     logits = self.model(data.x, edge_index)
-                    emb = self.model.get_emb(data.x, edge_index)
+                    emb, _ = self.model.get_emb(data.x, edge_index)
                     emb_dict[gid] = emb.data.cpu()
                     if use_pred_label:
                         ori_pred_dict[gid] = logits.argmax(-1).data.cpu()
@@ -569,7 +570,7 @@ class PGExplainer(nn.Module):
             # train the mask generator
             duration = 0.0
             for epoch in range(self.epochs):
-                loss = 0.0
+                loss = {'loss': 0.0, 'size': 0.0, 'ent': 0.0}
                 pred_list = []
                 tmp = float(self.t0 * np.power(self.t1 / self.t0, epoch / self.epochs))
                 self.elayers.train()
@@ -581,16 +582,19 @@ class PGExplainer(nn.Module):
                     data = dataset[gid]
                     data.to(self.device)
                     edge_index, _ = add_self_loops(data.edge_index, num_nodes=data.x.shape[0])
-                    prob, _ = self.explain(data.x, edge_index, embed=emb_dict[gid], tmp=tmp, training=True)
-                    loss_tmp = self.__loss__(prob[0], ori_pred_dict[gid])
-                    loss_tmp.backward()
-                    loss += loss_tmp.item()
+                    prob, edge_mask = self.explain(data.x, edge_index, embed=emb_dict[gid], tmp=tmp, training=True)
+                    loss_tmp = self.__loss__(prob[0], ori_pred_dict[gid], edge_mask)
+
+                    sum(loss_tmp.values()).backward()
+
+                    loss = {k: loss[k] + loss_tmp[k].item() for k in loss.keys()}
                     pred_label = prob.argmax(-1).item()
                     pred_list.append(pred_label)
 
                 optimizer.step()
                 duration += time.perf_counter() - tic
-                print(f'Epoch: {epoch} | Loss: {loss}')
+                # print loss, size, ent
+                print(f'Epoch: {epoch} | Loss: {loss["loss"]} | Size: {loss["size"]} | Ent: {loss["ent"]}')
         else:
             with torch.no_grad():
                 data = dataset[0]
@@ -606,7 +610,7 @@ class PGExplainer(nn.Module):
                     x, edge_index, y, subset, _ = \
                         self.get_subgraph(node_idx=node_idx, x=data.x, edge_index=edge_index, y=data.y)
                     logits = self.model(data.x, edge_index)
-                    emb = self.model.get_emb(data.x, edge_index)
+                    emb, _ = self.model.get_emb(data.x, edge_index)
 
                     x_dict[node_idx] = x.to(self.device)
                     edge_index_dict[node_idx] = edge_index.to(self.device)
@@ -671,7 +675,7 @@ class PGExplainer(nn.Module):
         self.__clear_masks__()
         logits = self.model(x, edge_index)
         probs = F.softmax(logits, dim=-1)
-        embed = self.model.get_emb(x, edge_index)
+        embed, _ = self.model.get_emb(x, edge_index)
 
         if self.explain_graph:
             # original value
@@ -686,7 +690,7 @@ class PGExplainer(nn.Module):
             # masked value
             x, edge_index, _, subset, _ = self.get_subgraph(node_idx, x, edge_index)
             new_node_idx = torch.where(subset == node_idx)[0]
-            embed = self.model.get_emb(x, edge_index)
+            embed, _ = self.model.get_emb(x, edge_index)
             _, edge_mask = self.explain(x, edge_index, embed, tmp=1.0, training=False)
 
         # return variables

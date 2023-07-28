@@ -162,7 +162,7 @@ class GNNExplainer(EdgeBase):
             # self.__clear_masks__()
             # self.__set_masks__(x, self_loop_edge_index)
             with self.connect_mask(self):
-                edge_masks = torch.load(store_file)
+                edge_masks = torch.load(store_file, map_location=self.device)
 
         edge_scores = copy.deepcopy(edge_masks)
 

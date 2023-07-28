@@ -39,16 +39,19 @@ def dataset_method_train(explainer, args, loader, dataset, model):
     use_pred_label = args['explain'].explain_pred_label
     if isinstance(explainer, PGExplainer):
         if use_pred_label:
-            train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
-                                      f'{args["explain"].dataset_name}_{args["explain"].model_name}_PL.pt')
+            train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'PGExplainer' / args[
+                "explain"].dataset_name / f'{args["explain"].model_name}_PL.pt'
         else:
-            train_ckpt = os.path.join(ROOT_DIR, 'pgxtmp',
-                                      f'{args["explain"].dataset_name}_{args["explain"].model_name}.pt')
-        if not os.path.exists(train_ckpt) or gem_args.force_retrain:
+            train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'PGExplainer' / args[
+                "explain"].dataset_name / f'{args["explain"].model_name}.pt'
+        os.makedirs(train_ckpt_path.parent, exist_ok=True)
+        if train_ckpt_path.exists() and not gem_args.force_retrain:
+            state_dict = torch.load(train_ckpt_path, map_location=explainer.device)
+            explainer.load_state_dict(state_dict, strict=False)
+        else:
             explainer.pg.train_explanation_network(loader['explain'].dataset, use_pred_label=use_pred_label)
-            torch.save(explainer.state_dict(), train_ckpt)
-        state_dict = torch.load(train_ckpt)
-        explainer.load_state_dict(state_dict, strict=False)
+            torch.save(explainer.state_dict(), train_ckpt_path)
+
     elif isinstance(explainer, Gem):
         top_k = gem_args.top_k
         threshold = None

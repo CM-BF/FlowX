@@ -10,14 +10,14 @@ import torch
 from torch_geometric.utils.num_nodes import maybe_num_nodes
 
 
-def gumbel_softmax(log_alpha: torch.Tensor, beta: float = 1.0, training: bool = True):
+def gumbel_softmax(log_alpha: torch.Tensor, beta: float = 1.0, training: bool = True, gamma=1e-10):
     r""" Sample from the instantiation of concrete distribution when training
     Args:
         log_alpha: input probabilities
         beta: temperature for softmax
     """
     if training:
-        random_noise = torch.empty_like(log_alpha).uniform_(1e-10, 1 - 1e-10)
+        random_noise = torch.empty_like(log_alpha).uniform_(gamma, 1 - gamma)
         random_noise = torch.log(random_noise) - torch.log(1.0 - random_noise)
         gate_inputs = (random_noise + log_alpha) / beta
         gate_inputs = gate_inputs.sigmoid()
