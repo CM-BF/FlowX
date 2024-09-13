@@ -22,7 +22,7 @@ from xgraph.kernel.train_utils import TrainUtils as tr_utils
 from xgraph.args import data_args
 from tqdm import tqdm
 from cilog import fill_table
-from xgraph.models.explainers_backup import Gem
+# from xgraph.models.explainers_backup import Gem
 from xgraph.models.explainers.PGExplainer import PGExplainer
 from xgraph.models.explainers.VGIB import VGIB
 from xgraph.models.explainers.RC_Explainer import RC_Explainer_Batch_star
@@ -109,7 +109,7 @@ def main():
         print(f'#IN#Create explainer: {args["explain"].explainer}...')
         explainer = load_explainer(args['explain'].explainer, model, args['explain'])
 
-        if isinstance(explainer, (PGExplainer, Gem, VGIB, RC_Explainer_Batch_star)):
+        if isinstance(explainer, (PGExplainer, VGIB, RC_Explainer_Batch_star)): # , Gem
             dataset_method_train(explainer, args, loader, dataset, model)
 
         # begin explain

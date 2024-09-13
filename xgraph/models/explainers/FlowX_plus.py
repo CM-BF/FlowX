@@ -128,7 +128,7 @@ class FlowX_plus(FlowBase):
             # --- save results for different Sparsity ---
             torch.save(walks, store_file)
         else:
-            walks = torch.load(store_file)
+            walks = torch.load(store_file, map_location=self.device)
 
         # specify to edge with self-loop mask prediction
         labels = tuple(i for i in range(data_args.num_classes))
@@ -259,6 +259,9 @@ class FlowX_plus(FlowBase):
 
             # --- score/mask transformer ---
             self.flow_mask = shap_flow_score[:, ex_label]
+
+            if edge_index.shape[1] == 0:
+                return
 
             # --- setting layer edge masks ---
             self.layer_edge_mask = (self.flow_mask * self.flow2layeredge_matrix).view(self.flow_mask.shape[0],

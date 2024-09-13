@@ -23,8 +23,8 @@ class FlowX_minus(FlowBase):
         'edge_ent': 1e-1
     }
 
-    def __init__(self, model, epochs=500, lr=1e-1, explain_graph=False, molecule=False):
     # def __init__(self, model, epochs=500, lr=1e-1, explain_graph=False, molecule=False):
+    def __init__(self, model, epochs=500, lr=1e-2, explain_graph=False, molecule=False): # Graph-SST2 only
         super().__init__(model=model, epochs=epochs, lr=lr, explain_graph=explain_graph, molecule=molecule)
 
         self.score_structure = [(i % 2, term_idx)
@@ -90,7 +90,7 @@ class FlowX_minus(FlowBase):
         force_recalculate = x_args.force_recalculate
         explain_index = kwargs.get('index')
         store_path = os.path.join(ROOT_DIR, 'masks', f'{x_args.explainer}_tmp', f'{x_args.dataset_name}_{x_args.model_name}')
-        store_file = os.path.join(store_path, f'{explain_index}.pt')
+        store_file = os.path.join(store_path, f'{explain_index}_{kwargs.get("sparsity")}.pt')
 
         if not os.path.exists(store_path):
             os.makedirs(store_path)
@@ -128,7 +128,7 @@ class FlowX_minus(FlowBase):
             # --- save results for different Sparsity ---
             torch.save(walks, store_file)
         else:
-            walks = torch.load(store_file)
+            walks = torch.load(store_file, map_location=self.device)
 
         # specify to edge with self-loop mask prediction
         labels = tuple(i for i in range(data_args.num_classes))
@@ -169,6 +169,7 @@ class FlowX_minus(FlowBase):
         # ent = -m * torch.log(m + EPS) - (1 - m) * torch.log(1 - m + EPS)
         # loss = loss + self.coeffs['edge_ent'] * ent.mean()
 
+        # info loss
         eps = 1e-6
         # r = self.get_r(100, 0.1, self.epoch, final_r=x_args.sparsity)
         r = 1 - x_args.sparsity
@@ -179,6 +180,12 @@ class FlowX_minus(FlowBase):
         loss = {'loss': loss, 'info': info_loss}
 
         return loss
+
+    def get_r(self, decay_interval, decay_r, current_epoch, init_r=0.9, final_r=0.5):
+        r = init_r - current_epoch // decay_interval * decay_r
+        if r < final_r:
+            r = final_r
+        return r
 
     def train_mask(self,
                    x: Tensor,
@@ -196,7 +203,7 @@ class FlowX_minus(FlowBase):
         # initialize a mask
         self.to(x.device)
 
-        # --- necesufy mask --- wrong!!!!! because of testing!!!!
+        # --- necesufy mask ---
         self.nec_suf_mask = nn.Parameter(1e-1 * nn.init.uniform_(torch.empty((1, iter_weighted_change_walks_list.shape[1], 1), device=self.device)))
         # self.nec_suf_mask = nn.Parameter(1 * torch.ones((1, iter_weighted_change_walks_list.shape[1], 1), device=self.device))
 
@@ -224,18 +231,22 @@ class FlowX_minus(FlowBase):
                                                  dim=1).detach()
 
         # train to get the mask
-        # optimizer = torch.optim.Adam([{'params': self.nec_suf_mask}],
-                                      # {'params': self.iter_weighted_change_walks_list, 'lr': self.score_lr}],
-                                     # lr=self.lr)
         self.instance_norm = torch.nn.InstanceNorm1d(1, affine=True, track_running_stats=False).to(self.device)
         optimizer = torch.optim.Adam([{'params': self.nec_suf_mask, 'lr': self.lr},
-                                      {'params': self.instance_norm.parameters(), 'lr': 1e-1}], weight_decay=1e-5)
+                                      {'params': self.instance_norm.parameters(), 'lr': self.lr}], weight_decay=0e-5)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 400], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300], gamma=0.05)
         # scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[300, 450], gamma=1e-1)
         print('#I#begin this ex_label')
+        best_flow_mask = None
         for epoch in range(1, self.epochs + 1):
 
+            climb = False
+
+            # if climb:
+            #     self.nec_suf_mask = self.nec_suf_mask.sigmoid()
+
+            # self.iter_weighted_change_walks_list: iter x subset_idx x flow_idx
             masked_iter_weighted_change_walks_list = self.iter_weighted_change_walks_list * self.nec_suf_mask.sigmoid()
 
             walk_scores = (masked_iter_weighted_change_walks_list.unsqueeze(3).repeat(1, 1, 1,
@@ -248,6 +259,9 @@ class FlowX_minus(FlowBase):
             # --- score/mask transformer ---
             self.flow_mask = shap_flow_score[:, ex_label]
 
+            if edge_index.shape[1] == 0:
+                return
+
             # --- setting layer edge masks ---
             self.layer_edge_mask = (self.flow_mask * self.flow2layeredge_matrix).view(self.flow_mask.shape[0],
                                                                                       self.num_layers,
@@ -257,54 +271,63 @@ class FlowX_minus(FlowBase):
             # Option 1: make it harder: draw back: cannot control sparsity
             # mask = mask * 500 - 250
             # mask = mask.sigmoid()
-            climb = False
-            if climb:
-                mask = mask - mask.min()
-                mask = mask / (mask.max() + EPS)
-                mask = mask ** 8
-                mask = mask - mask.min()
-                mask = mask / (mask.max() + EPS)
-            else:
-                # end_epoch = 300
-                # temperature = float(t0 * ((t1 / t0) ** (epoch / end_epoch))) if epoch < end_epoch else t1
-                # mask = gumbel_softmax(mask, temperature, training=True)
-                mask = self.instance_norm(mask[None, None, :]).squeeze()
-                self.epoch = epoch
-                temperature = 1
-                mask = gumbel_softmax(mask, temperature, training=True)
 
+            cur_sparsity, loss = self.mask_forward(EPS, climb, edge_index, epoch, ex_label, kwargs, mask, x)
 
-            cur_sparsity = (mask < 0.5).sum().float() / mask.shape[0]
-            # if cur_sparsity < x_args.sparsity:
-            #     # --- early stop ---
-            #     break
             if epoch % 20 == 0:
                 print(f'Epoch: {epoch} --- training mask Sparsity: {cur_sparsity}')
-            if self.fidelity_plus:
-                mask = 1 - mask # Fidelity +
-            self.mask = mask
-            isig_mask = torch.log(self.mask / (1 - self.mask + EPS) + EPS)
-
-
-            # --- temp update non-leaf edge_mask
-            temp_edge_mask = []
-            for layer_idx in range(self.num_layers):
-                # --- Attention self-loop will be put at last because of the model will do it ---
-                temp_edge_mask.append(isig_mask)
-
-            # debug:
-            with self.temp_mask(self, temp_edge_mask):
-                raw_preds = self.model(x, edge_index, **kwargs)
-            loss = self.__loss__(raw_preds, ex_label)
-
-            if epoch % 20 == 0:
                 print(f'#D#Loss:{loss["loss"].item()}, Info: {loss["info"]}')
 
             optimizer.zero_grad()
             sum(loss.values()).backward()
             optimizer.step()
+        #     with torch.no_grad():
+        #         cur_sparsity, loss = self.mask_forward(EPS, climb, edge_index, epoch, ex_label, kwargs, mask, x, training=False)
+        #
+        #     if (best_flow_mask is None or loss['loss'] < best_flow_mask['loss']) and cur_sparsity >= x_args.sparsity - 0.01:
+        #         best_flow_mask = {'loss': loss['loss'], 'mask': self.flow_mask.clone().detach(), 'epoch': epoch, 'info': loss['info'], 'sparsity': cur_sparsity}
+        #         # print(f'Best mask update: {best_flow_mask["loss"]}')
+        #
+        # if best_flow_mask is not None:
+        #     self.flow_mask = best_flow_mask['mask']
+        #     print(f'Best mask: {best_flow_mask["loss"]}, epoch: {best_flow_mask["epoch"]}, info: {best_flow_mask["info"]}, sparsity: {best_flow_mask["sparsity"]}')
+
             # scheduler.step()
         return
+
+    def mask_forward(self, EPS, climb, edge_index, epoch, ex_label, kwargs, mask, x, training=True):
+        if climb:
+            # pass
+            mask = mask - mask.min()
+            mask = mask / (mask.max() + EPS)
+            mask = mask ** 8
+            mask = mask - mask.min()
+            mask = mask / (mask.max() + EPS)
+        else:
+            # end_epoch = 300
+            # temperature = float(t0 * ((t1 / t0) ** (epoch / end_epoch))) if epoch < end_epoch else t1
+            mask = self.instance_norm(mask[None, None, :]).squeeze()
+            self.epoch = epoch
+            temperature = 1
+            mask = gumbel_softmax(mask, temperature, training=training)
+        cur_sparsity = (mask < 0.5).sum().float() / mask.shape[0]
+        # if cur_sparsity < x_args.sparsity:
+        #     # --- early stop ---
+        #     break
+        if self.fidelity_plus:
+            mask = 1 - mask  # Fidelity +
+        self.mask = mask
+        isig_mask = torch.log(self.mask / (1 - self.mask + EPS) + EPS)
+        # --- temp update non-leaf edge_mask
+        temp_edge_mask = []
+        for layer_idx in range(self.num_layers):
+            # --- Attention self-loop will be put at last because of the model will do it ---
+            temp_edge_mask.append(isig_mask)
+        # debug:
+        with self.temp_mask(self, temp_edge_mask):
+            raw_preds = self.model(x, edge_index, **kwargs)
+        loss = self.__loss__(raw_preds, ex_label)
+        return cur_sparsity, loss
 
     def flow_shap(self,
                   x,
@@ -366,7 +389,7 @@ class FlowX_minus(FlowBase):
 
             # --- compute subsets' outputs of current iteration ---
             for layer_idx in range(self.num_layers):
-                # --- Attention self-loop will be put at last because the model will do it ---
+                # --- Attention self-loop will be put at last because of the model will do it ---
                 self.edge_mask[layer_idx].data = torch.cat(
                     [layer_edge_mask_list[:, layer_idx, :self.num_edges].reshape(-1),
                      layer_edge_mask_list[:, layer_idx, self.num_edges:].reshape(-1)])

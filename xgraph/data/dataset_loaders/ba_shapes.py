@@ -61,9 +61,9 @@ def ba_shapes(name):
         val_set = copy.deepcopy(dataset)
         test_set = copy.deepcopy(dataset)
         train_set.data.mask = train_set.data.train_mask
-        train_set.slices['mask'] = train_set.slices['train_mask']
+        # train_set.slices['mask'] = train_set.slices['train_mask']
         val_set.data.mask = val_set.data.val_mask
-        val_set.slices['mask'] = val_set.slices['val_mask']
+        # val_set.slices['mask'] = val_set.slices['val_mask']
         test_set.data.mask = test_set.data.test_mask
-        test_set.slices['mask'] = test_set.slices['test_mask']
+        # test_set.slices['mask'] = test_set.slices['test_mask']
         return {'train': train_set, 'val': val_set, 'test': test_set}

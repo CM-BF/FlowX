@@ -16,7 +16,7 @@ from .utils import nan2zero_get_mask
 from xgraph.kernel.train_utils import TrainUtils as tr_utils
 from xgraph.kernel.utils import Metric
 from xgraph.models.explainers import PGExplainer, VGIB, RC_Explainer_Batch_star
-from xgraph.models.explainers_backup import Gem
+# from xgraph.models.explainers_backup import Gem
 from pathlib import Path
 from xgraph.args import gem_args
 
@@ -52,27 +52,27 @@ def dataset_method_train(explainer, args, loader, dataset, model):
             explainer.pg.train_explanation_network(loader['explain'].dataset, use_pred_label=use_pred_label)
             torch.save(explainer.state_dict(), train_ckpt_path)
 
-    elif isinstance(explainer, Gem):
-        top_k = gem_args.top_k
-        threshold = None
-        force_regen = gem_args.force_regen
-        force_retrain = gem_args.force_retrain
-        save_root = os.path.join(ROOT_DIR, 'Gem')
-        dataset_name = dataset['train'].dataset.name
-        save_dir = f"{dataset_name}_top_{top_k}_thres_{threshold}"
-        gen_output = os.path.join(save_root, 'distillation', save_dir)
-        train_output = os.path.join(save_root, 'explanation', save_dir)
-        if force_regen or not os.path.exists(gen_output):
-            explainer.gen_gt(dataset, model, device=data_args.device, top_k=top_k, threshold=threshold, output=gen_output)
-            print('finish generation')
-            force_retrain = True
-        train_args = explainer.train_args[data_args.model_level]
-        train_args.distillation = gen_output
-        train_args.output = train_output
-        train_args.dataset = dataset_name
-        if force_retrain or not os.path.exists(train_output):
-            explainer.train_vae(train_args)
-            print('finish training explainer')
+    # elif isinstance(explainer, Gem):
+    #     top_k = gem_args.top_k
+    #     threshold = None
+    #     force_regen = gem_args.force_regen
+    #     force_retrain = gem_args.force_retrain
+    #     save_root = os.path.join(ROOT_DIR, 'Gem')
+    #     dataset_name = dataset['train'].dataset.name
+    #     save_dir = f"{dataset_name}_top_{top_k}_thres_{threshold}"
+    #     gen_output = os.path.join(save_root, 'distillation', save_dir)
+    #     train_output = os.path.join(save_root, 'explanation', save_dir)
+    #     if force_regen or not os.path.exists(gen_output):
+    #         explainer.gen_gt(dataset, model, device=data_args.device, top_k=top_k, threshold=threshold, output=gen_output)
+    #         print('finish generation')
+    #         force_retrain = True
+    #     train_args = explainer.train_args[data_args.model_level]
+    #     train_args.distillation = gen_output
+    #     train_args.output = train_output
+    #     train_args.dataset = dataset_name
+    #     if force_retrain or not os.path.exists(train_output):
+    #         explainer.train_vae(train_args)
+    #         print('finish training explainer')
     elif isinstance(explainer, VGIB):
         train_ckpt_path = Path(ROOT_DIR) / 'checkpoints' / 'VGIB' / args[
             "explain"].dataset_name / f'{args["explain"].model_name}_PL.pt'
